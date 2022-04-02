@@ -780,7 +780,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 644302a34f0efb94395cd0264846c411, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1559,7 +1559,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPaused: 0
-  timeLerpDur: 0
   pauseOnStart: 0
   enablePauseButton: 1
   allowUnpausing: 1
@@ -1728,6 +1727,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38bbb9197bce9c243b9779f6c4503f68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bounds:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!4 &866976009
 Transform:
   m_ObjectHideFlags: 0
@@ -2956,6 +2961,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00ab2ba1a5056c546be45315cb2729df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapPos: {x: 0, y: 0}
+  groundTileType: {fileID: 0}
+  groundTile: {fileID: 0}
+  building: {fileID: 0}
 --- !u!1 &1580042310
 GameObject:
   m_ObjectHideFlags: 0
@@ -3801,6 +3810,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18268b88c17f8f747af92d7bfb68c255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  localOccupiedSpaces: []
 --- !u!1 &1837704448
 GameObject:
   m_ObjectHideFlags: 0
@@ -4281,7 +4291,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 32b62444dea35dd43b9b282c4e01bb53, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
