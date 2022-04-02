@@ -8,7 +8,7 @@ public class BuildingToggleUI : MonoBehaviour {
     [System.Serializable]
     public struct BToggleInitData {
         public ToggleGroup toggleGroup;
-        public BuildingType buildingType;
+        public Building buildingType;
         public BuildInterface buildInterface;
     }
 

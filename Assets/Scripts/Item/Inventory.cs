@@ -5,13 +5,21 @@ using UnityEngine;
 
 [System.Serializable]
 public class Inventory : MonoBehaviour {
+
     [System.Serializable]
     public class ItemSlot {
         public ItemStack itemStack;
     }
+
+    [SerializeField] int numSlots = 1;
     public ItemSlot[] itemSlots;
 
-    public void Init(int numSlots) {
+
+    private void Awake() {
+        Init(numSlots);
+    }
+
+    void Init(int numSlots) {
         itemSlots = new ItemSlot[numSlots];
         foreach (var itemslot in itemSlots) {
             itemslot.itemStack = new ItemStack();
@@ -106,7 +114,7 @@ public class Inventory : MonoBehaviour {
                     slots.Last().itemStack.item = null;
                     slots = slots.SkipLast(1);
                 }
-                if (slots.First().itemStack.IsFull){
+                if (slots.First().itemStack.IsFull) {
                     // remove it
                     slots = slots.Skip(1);
                 }

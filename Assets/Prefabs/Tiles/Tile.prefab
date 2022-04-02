@@ -144,6 +144,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 0}
-  groundTileType: {fileID: 0}
+  _groundTileType: {fileID: 11400000, guid: 484df148acdb6b6448caccd5645f7c5e, type: 2}
   groundTile: {fileID: 0}
   building: {fileID: 0}

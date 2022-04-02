@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class StorageBuilding : Building, IHoldsItem {
     
+    [Header("Storage")]
     [SerializeField] Inventory inventory;
 
     public Inventory Inventory => inventory;

@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce164ee805630f042abea58b3edd3156, type: 3}
-  m_Name: StorageContainer
+  m_Script: {fileID: 11500000, guid: e351566b8573894409265843120ac26f, type: 3}
+  m_Name: WaterTile
   m_EditorClassIdentifier: 
-  buildingPrefab: {fileID: 0}
-  localOccupiedSpaces: []
-  buildingRecipe:
-    requiredItems: []
+  blocksBuildings: 1
+  allowedBuildingTypes: []
+  color: {r: 0.29411766, g: 0.73333335, b: 0.7490196, a: 1}
+  tilePrefab: {fileID: 0}

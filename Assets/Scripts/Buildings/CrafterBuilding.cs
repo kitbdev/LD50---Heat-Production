@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CrafterBuilding : Building {
 
+    [Header("Crafter")]
     public ItemRecipe selectedRecipe;
-    
+
 }

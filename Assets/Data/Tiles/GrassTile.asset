@@ -9,6 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01719b90eaf623c4bab47610941e2e81, type: 3}
+  m_Script: {fileID: 11500000, guid: e351566b8573894409265843120ac26f, type: 3}
   m_Name: GrassTile
   m_EditorClassIdentifier: 
+  blocksBuildings: 1
+  allowedBuildingTypes: []
+  color: {r: 0, g: 0, b: 0, a: 0}
+  tilePrefab: {fileID: 0}

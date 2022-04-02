@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class InserterBuilding : Building {
 
+    [Header("Inserter")]
     public float speed = 1;
     public Vector2Int fromBuildingLPos;
     public Vector2Int toBuildingLPos;

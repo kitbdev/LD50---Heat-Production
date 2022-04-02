@@ -24,17 +24,19 @@ public class Tile : MonoBehaviour {
         _groundTileType = tileType;
         // todo fix go
     }
-    public bool CanPlaceBuilding(BuildingType building) {
+    public bool CanPlaceBuilding(Building building) {
         return !HasBuilding 
             && (!groundTileType.blocksBuildings || groundTileType.allowedBuildingTypes.Contains(building));
     }
     public void PlaceBuilding(Building building) {
         this.building = building;
+        building.tile = this;
         building.OnPlaced();
     }
     public void RemoveBuilding() {
         if (!HasBuilding) return;
         building.OnRemoved();
+        building.tile = null;
         if (Application.isPlaying) {
             Destroy(building.gameObject);
         } else {

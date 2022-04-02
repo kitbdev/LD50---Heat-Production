@@ -29,7 +29,7 @@ public class BuildInterface : MonoBehaviour {
 
     GameObject placingGhost;
     // Building placingGhostBuilding;
-    BuildingType placingType;
+    Building placingType;
 
     [SerializeField] Camera cam;
     Controls controls;
@@ -130,7 +130,7 @@ public class BuildInterface : MonoBehaviour {
     }
     void SetUpUI() {
         ClearUIBtns();
-        foreach (BuildingType buildingType in BuildingManager.Instance.buildingTypes) {
+        foreach (Building buildingType in BuildingManager.Instance.buildingTypes) {
             GameObject buildingBtnGo = Instantiate(buildingToggleBtnPrefab, buildingButtonHolder);
             BuildingToggleUI buildingToggleUI = buildingBtnGo.GetComponent<BuildingToggleUI>();
             buildingToggleUI.Init(new BuildingToggleUI.BToggleInitData() {
@@ -166,12 +166,12 @@ public class BuildInterface : MonoBehaviour {
     void EyeDropperSample() {
         if (!isBuilding) return;
         if (cursorOverTile != null && cursorOverTile.HasBuilding) {
-            placingType = cursorOverTile.building.buildingType;
+            placingType = BuildingManager.Instance.GetBuildingTypeForBuilding(cursorOverTile.building);
             StartPlacing();
         }
     }
 
-    public void StartPlacingBuilding(BuildingType buildingType) {
+    public void StartPlacingBuilding(Building buildingType) {
         if (!isBuilding) return;
         // Debug.Log("StartPlacingBuilding " + (buildingType?.name ?? "none"));
         this.placingType = buildingType;
@@ -185,7 +185,7 @@ public class BuildInterface : MonoBehaviour {
     }
     void StartPlacing() {
         isPlacing = true;
-        placingGhost = Instantiate(placingType.buildingPrefab, transform);
+        placingGhost = Instantiate(BuildingManager.Instance.GetPrefabForBuildingType(placingType), transform);
         // todo disable physics and logic
         // todo make transp
         placingGhost.transform.position = cursorPos;

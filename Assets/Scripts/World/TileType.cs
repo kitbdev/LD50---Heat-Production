@@ -6,8 +6,8 @@ public class TileType : ScriptableObject {
 
     public bool blocksBuildings = true;
     // like for miners
-    public BuildingType[] allowedBuildingTypes;
+    public Building[] allowedBuildingTypes;
     public Color color;
-    public GameObject tilePrefab;
+    public GameObject tilePrefab;// additional to existing prefab
 
 }

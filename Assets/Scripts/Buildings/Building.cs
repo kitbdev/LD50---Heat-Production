@@ -6,17 +6,29 @@ using UnityEngine;
 [SelectionBase]
 public class Building : MonoBehaviour {
 
-    public BuildingType buildingType;
+    [System.Serializable]
+    public class BuildingRecipe {
+        public ItemStack[] requiredItems;
+        // required tier?
+        // public BuildingType buildingType;
+    }
 
-    [SerializeField] bool isPlaced = false;
-    // public Direction dir;
-    // public Quaternion dir;
+    // public BuildingType buildingType;
+    [ReadOnly] public int typeIndex;
+
+    public Vector2Int[] localOccupiedSpaces;
+    public BuildingRecipe buildingRecipe;
+
+    // local
+    [Space]
     [SerializeField] TMPro.TMP_Text labelName;
 
-    Tile tile;
+    // [Header("Runtime")]
+    [SerializeField] bool isPlaced = false;
+    [ReadOnly] public Tile tile;
 
-    public IEnumerable<Vector2Int> occupiedSpaces => tile == null ? buildingType.localOccupiedSpaces :
-        buildingType.localOccupiedSpaces.Select(los => LocalRelPosToTilePos(los));
+    public IEnumerable<Vector2Int> occupiedSpaces => tile == null ? localOccupiedSpaces :
+        localOccupiedSpaces.Append(Vector2Int.zero).Distinct().Select(los => LocalRelPosToTilePos(los));
 
     public Vector2Int LocalRelPosToTilePos(Vector2Int localPos) {
         Vector3 rotated = transform.localRotation * new Vector3(localPos.x, 0, localPos.y);
@@ -24,15 +36,24 @@ public class Building : MonoBehaviour {
         return tile.mapPos + rotedpos;
     }
 
+    private void OnValidate() {
+        SetLabelName();
+    }
     protected virtual void Awake() {
+        // NewMethod();
+    }
+
+    [ContextMenu("SetName")]
+    private void SetLabelName() {
         labelName.text = name;
     }
-    public virtual void OnPlaced(){
+
+    public virtual void OnPlaced() {
         // todo stop looking like a ghost?
         isPlaced = true;
         // todo anim
     }
-    public virtual void OnRemoved(){
+    public virtual void OnRemoved() {
         isPlaced = false;
     }
 

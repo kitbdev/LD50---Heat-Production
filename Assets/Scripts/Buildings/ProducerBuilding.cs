@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ProducerBuilding : Building, IHoldsItem {
 
+    [Header("Producer")]
     public ItemType productionItem;
     public int productionRate;
 
