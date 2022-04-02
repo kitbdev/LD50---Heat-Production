@@ -215,10 +215,12 @@ public class BuildInterface : MonoBehaviour {
             StartPlacing();
         } else {
             placingType = null;
+            buildingToggleGroup.SetAllTogglesOff();
         }
     }
     void CancelPlacing() {
         isPlacing = false;
+        buildingToggleGroup.SetAllTogglesOff();
         Destroy(placingGhost.gameObject);
         placingGhost = null;
     }

@@ -38,6 +38,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5384433749805967175, guid: 1ee6a79d9f64a634da59d3867ca00d19,
+        type: 3}
+      propertyPath: m_text
+      value: Inserter
+      objectReference: {fileID: 0}
     - target: {fileID: 5384433750535101304, guid: 1ee6a79d9f64a634da59d3867ca00d19,
         type: 3}
       propertyPath: m_Name
@@ -138,13 +143,37 @@ MonoBehaviour:
     - item:
         itemType: {fileID: 11400000, guid: 8ea2846494c9ee742b1ff80d9400c4c9, type: 2}
       count: 1
-  isPlaced: 0
   labelName: {fileID: 6723724741889532874}
+  isPlaced: 0
   tile: {fileID: 0}
   speed: 1
   fromBuildingLPos: {x: 0, y: -1}
   toBuildingLPos: {x: 0, y: 1}
   grabber: {fileID: 1848204514701199989}
+--- !u!114 &5812637481334409721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6723724740472561653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1a73489f7a37d94293b09b063c1932c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startOnStart: 0
+  duration: 1
+  autoRestart: 1
+  useUnscaledTime: 0
+  isRunning: 0
+  timer: 0
+  onTimerUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  onTimerComplete:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &6723724741889532874 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5384433749805967175, guid: 1ee6a79d9f64a634da59d3867ca00d19,

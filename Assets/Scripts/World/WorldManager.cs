@@ -39,6 +39,7 @@ public class WorldManager : Singleton<WorldManager> {
                 ntile.name = "Tile " + tilePos;
                 ntile.transform.position = TilePosToWorldPos(tilePos);
                 Tile tile = ntile.GetComponent<Tile>();
+                tile.mapPos = tilePos;
                 tilelist.Add(tile);
             }
         }

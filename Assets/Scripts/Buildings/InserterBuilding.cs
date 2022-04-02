@@ -10,35 +10,34 @@ public class InserterBuilding : Building {
     public Vector2Int toBuildingLPos;
 
     public Transform grabber;
-
-    public IHoldsItem fromBuilding {
-        get {
-            Building building = WorldManager.Instance.GetTileAt(LocalRelPosToTilePos(fromBuildingLPos))?.building;
-            if (building is IHoldsItem holdsItem) {
-                return holdsItem;
-            }
-            return null;
-        }
-    }
-    public IHoldsItem toBuilding {
-        get {
-            Building building = WorldManager.Instance.GetTileAt(LocalRelPosToTilePos(toBuildingLPos))?.building;
-            if (building is IHoldsItem holdsItem) {
-                return holdsItem;
-            }
-            return null;
-        }
-    }
-
-    DroppedItem heldItem;
+    [SerializeField, ReadOnly] DroppedItem heldItem;
 
     Timer processTimer;
+
+
+    private IHoldsItem GetHoldsItem(Vector2Int localPos) {
+        Building building = WorldManager.Instance.GetTileAt(LocalRelPosToTilePos(localPos))?.building;
+        if (building is IHoldsItem holdsItem) {
+            return holdsItem;
+        }
+        return null;
+    }
+
+    public IHoldsItem GetFromBuilding() {
+        return GetHoldsItem(fromBuildingLPos);
+    }
+    public IHoldsItem GetToBuilding() {
+        return GetHoldsItem(toBuildingLPos);
+    }
+
+
     protected override void Awake() {
         processTimer = GetComponent<Timer>();
     }
 
     public override void OnPlaced() {
         base.OnPlaced();
+        // todo use anim instead
         processTimer.onTimerComplete.AddListener(StartMovingItem);
         processTimer.StartTimer();
     }
@@ -48,21 +47,28 @@ public class InserterBuilding : Building {
         processTimer.StopTimer();
     }
     void StartMovingItem() {
-        if (fromBuilding != null) {
-            if (fromBuilding.Inventory.HasAnyItems()) {
+        // Debug.Log("try grab " + fromBuildingLPos + " " + LocalRelPosToTilePos(fromBuildingLPos));
+        IHoldsItem frombuilding = GetFromBuilding();
+        if (frombuilding != null) {
+            if (frombuilding.Inventory.HasAnyItems()) {
                 // todo optional filter
-                Item item = fromBuilding.Inventory.TakeFirstItem();
+                Item item = frombuilding.Inventory.TakeFirstItem();
                 heldItem = ItemManager.Instance.DropItem(item);
                 heldItem.transform.parent = grabber;
                 heldItem.transform.position = Vector3.zero;
                 heldItem.transform.rotation = Quaternion.identity;
+                // Debug.Log("Grabbed");
             }
         }
+        FinishMovingItem();
     }
     void FinishMovingItem() {
-        if (toBuilding != null) {
-            if (toBuilding.Inventory.HasSpaceFor(heldItem.item.itemType)) {
-                toBuilding.Inventory.AddItem(heldItem.item);
+        if (heldItem == null) return;
+        IHoldsItem tobuilding = GetToBuilding();
+        if (tobuilding != null) {
+            if (tobuilding.Inventory.HasSpaceFor(heldItem.item.itemType)) {
+                // Debug.Log("Placed");
+                tobuilding.Inventory.AddItem(heldItem.item);
                 Destroy(heldItem.gameObject);
                 heldItem = null;
             }

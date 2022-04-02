@@ -7,6 +7,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5384433749805967175, guid: 1ee6a79d9f64a634da59d3867ca00d19,
+        type: 3}
+      propertyPath: m_text
+      value: StorageContainer
+      objectReference: {fileID: 0}
     - target: {fileID: 5384433750535101304, guid: 1ee6a79d9f64a634da59d3867ca00d19,
         type: 3}
       propertyPath: m_Name
@@ -94,10 +99,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34f08c91ab756e24bae3b42c22b4fa02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingType: {fileID: 11400000, guid: d01ecd0de779dbc4c9a0598f8816b363, type: 2}
-  isPlaced: 0
+  typeIndex: 0
+  localOccupiedSpaces: []
+  buildingRecipe:
+    requiredItems: []
   labelName: {fileID: 2804139199855796642}
-  inventory: {fileID: 0}
+  isPlaced: 0
+  tile: {fileID: 0}
+  inventory: {fileID: 6251543788316857745}
 --- !u!114 &6251543788316857745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,6 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60a0e445b3042764d8289c7514794327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numSlots: 1
   itemSlots: []
 --- !u!114 &2804139199855796642 stripped
 MonoBehaviour:

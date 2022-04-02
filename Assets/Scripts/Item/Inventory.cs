@@ -9,6 +9,9 @@ public class Inventory : MonoBehaviour {
     [System.Serializable]
     public class ItemSlot {
         public ItemStack itemStack;
+        public override string ToString() {
+            return itemStack.ToString();
+        }
     }
 
     [SerializeField] int numSlots = 1;
@@ -21,7 +24,9 @@ public class Inventory : MonoBehaviour {
 
     void Init(int numSlots) {
         itemSlots = new ItemSlot[numSlots];
-        foreach (var itemslot in itemSlots) {
+        for (int i = 0; i < itemSlots.Length; i++) {
+            itemSlots[i] = new ItemSlot();
+            ItemSlot itemslot = itemSlots[i];
             itemslot.itemStack = new ItemStack();
             itemslot.itemStack.item = null;
             itemslot.itemStack.count = 0; ;
@@ -47,7 +52,9 @@ public class Inventory : MonoBehaviour {
     public bool HasAnyItems() => itemSlots.Any(sl => sl.itemStack.count > 0);
     public bool HasAnyItemsOfType(params ItemType[] matchingItemTypes) =>
         itemSlots.Any(sl => matchingItemTypes.Contains(sl.itemStack.item?.itemType) && sl.itemStack.count > 0);
-    public bool HasSpaceFor(ItemType itemType) => itemSlots.Any(sl => sl.itemStack.count > 0);
+
+    public bool HasSpaceFor(ItemType itemType) => HasSpaceFor(itemType, 1);
+    // itemSlots.Any(sl => sl.itemStack.IsEmpty || (sl.itemStack.item.itemType == itemType && !sl.itemStack.IsFull));
     public bool HasSpaceFor(ItemType itemType, int count) {
         int maxSpace = GetAvailableSpaceFor(itemType);
         return maxSpace >= count;
@@ -57,8 +64,11 @@ public class Inventory : MonoBehaviour {
         // get all empty and not full matching slots
         IEnumerable<ItemSlot> emptySlots = GetEmptyItemSlots();
         IEnumerable<ItemSlot> nonFullMatchingSlots = GetItemStacksOfTypes(itemType);
+        // Debug.Log("as " + itemSlots.ToStringFull());
         int maxSpace = emptySlots.Count() * itemType.itemMaxStack;
+        // Debug.Log("es " + maxSpace);
         maxSpace += nonFullMatchingSlots.Sum(slot => slot.itemStack.RemainingSpace);
+        // Debug.Log("ts " + maxSpace+" "+nonFullMatchingSlots.Count());
         return maxSpace;
     }
 

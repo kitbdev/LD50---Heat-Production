@@ -17,6 +17,9 @@ public class ItemStack {
     public bool IsEmpty => item == null || count == 0;
     public bool HasItem => item != null;
     public int RemainingSpace => item == null ? 0 : item.itemType.itemMaxStack - count;
+    public override string ToString() {
+        return IsEmpty ? "Empty Stack" : (count + " " + item.itemType.ToString() + "s stack");
+    }
 }
 [System.Serializable]
 public class ItemRecipe {

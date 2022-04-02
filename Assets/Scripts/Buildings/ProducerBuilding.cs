@@ -20,12 +20,19 @@ public class ProducerBuilding : Building, IHoldsItem {
     public override void OnPlaced() {
         base.OnPlaced();
         processTimer.onTimerComplete.AddListener(ProduceItem);
+        processTimer.StartTimer();
     }
     public override void OnRemoved() {
         processTimer.onTimerComplete.RemoveListener(ProduceItem);
+        processTimer.StopTimer();
         base.OnRemoved();
     }
     void ProduceItem() {
-        inventory.AddItem(new Item(productionItem));
+        // Debug.Log("Producing!");
+        if (inventory.HasSpaceFor(productionItem)) {
+            inventory.AddItem(new Item(productionItem));
+        } else {
+            // is full
+        }
     }
 }

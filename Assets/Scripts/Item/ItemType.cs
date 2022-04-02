@@ -6,7 +6,13 @@ public class ItemType : ScriptableObject {
     // [System.Serializable]
     // public class ItemType {
 
+    [Min(1)]
     public int itemMaxStack;
     // higher first
+    [Tooltip("Higher first")]
     public int sortOrder;
+
+    public override string ToString() {
+        return name;
+    }
 }
