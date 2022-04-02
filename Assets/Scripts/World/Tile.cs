@@ -10,11 +10,13 @@ public class Tile : MonoBehaviour {
     public GameObject groundTile;
     public Building building;
 
+    public bool HasBuilding => building != null;
+
     private void Awake() {
-        
+
     }
-    public void SetGroundTile(){
-        
+    public void SetGroundTile() {
+
     }
     // public void AddBuilding(){
 
