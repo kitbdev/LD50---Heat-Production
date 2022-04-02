@@ -13,17 +13,23 @@ public class BuildInterface : MonoBehaviour {
 
 
     [Header("Placing")]
-    [SerializeField] int previewLayer;
+    [Layer][SerializeField] int previewLayer;
     [SerializeField] Transform cursorT;
-    [SerializeField] int ghostSmoothing = 10;
+    [SerializeField] int ghostSmoothingPos = 20;
+    [SerializeField] int ghostSmoothingRot = 40;
     // [Space]
     [SerializeField, ReadOnly] bool isBuilding = false;
     [SerializeField, ReadOnly] bool isPlacing;
     [SerializeField, ReadOnly] int curRotation;
     [SerializeField, ReadOnly] Vector3 cursorPos = Vector3.zero;
+    [SerializeField, ReadOnly] Tile cursorOverTile;
+    [SerializeField, ReadOnly] bool keepPlacingHold = false;
+    [SerializeField, ReadOnly] bool keepPlacingToggle = false;
+    int defLayer;
 
     GameObject placingGhost;
-    GameObject placingPrefab;
+    // Building placingGhostBuilding;
+    BuildingType placingType;
 
     [SerializeField] Camera cam;
     Controls controls;
@@ -43,23 +49,34 @@ public class BuildInterface : MonoBehaviour {
                 StartBuilding();
             }
         };
+        controls.Player.PlaceBuilding.Enable();
         controls.Player.PlaceBuilding.performed += c => {
             if (isPlacing) {
                 FinishPlacing();
             }
         };
-        controls.Player.RemoveBuilding.performed += c => { };
+        controls.Player.RemoveBuilding.Enable();
+        controls.Player.RemoveBuilding.performed += c => { RemoveBuilding(); };
+        controls.Player.RotateBuilding.Enable();
         controls.Player.RotateBuilding.performed += c => {
             curRotation += c.ReadValue<float>() > 0 ? 1 : -1;
             if (curRotation > 3) curRotation = 0;
             if (curRotation < 0) curRotation = 3;
         };
-        controls.Player.KeepPlacingHold.performed += c => { };
-        controls.Player.KeepPlacingToggle.performed += c => { };
+        controls.Player.KeepPlacingHold.Enable();
+        controls.Player.KeepPlacingHold.performed += c => { keepPlacingHold = true; };
+        controls.Player.KeepPlacingHold.canceled += c => { keepPlacingHold = false; };
+        controls.Player.KeepPlacingToggle.Enable();
+        controls.Player.KeepPlacingToggle.performed += c => { keepPlacingToggle = !keepPlacingToggle; };
         if (PauseManager.Instance) PauseManager.Instance.pauseEvent.AddListener(OnPauseEvent);
     }
     private void OnDisable() {
         controls.Player.BuildMode.Disable();
+        controls.Player.PlaceBuilding.Disable();
+        controls.Player.RemoveBuilding.Disable();
+        controls.Player.RotateBuilding.Disable();
+        controls.Player.KeepPlacingHold.Disable();
+        controls.Player.KeepPlacingToggle.Disable();
         if (PauseManager.Instance) PauseManager.Instance.pauseEvent.RemoveListener(OnPauseEvent);
     }
 
@@ -82,8 +99,20 @@ public class BuildInterface : MonoBehaviour {
             Ray mouseRay = cam.ScreenPointToRay(mousepos);
             if (gamePlane.Raycast(mouseRay, out var dist)) {
                 cursorPos = mouseRay.GetPoint(dist);
+                // otherwise use last
             }
-            // otherwise use last 
+
+            cursorOverTile = WorldManager.Instance.GetTileAt(cursorPos);
+            // todo also when not building?
+            // get building info
+            if (cursorT != null) {
+                if (cursorOverTile != null) {
+                    cursorT.gameObject.SetActive(true);
+                    cursorT.position = cursorOverTile.transform.position;
+                } else {
+                    cursorT.gameObject.SetActive(false);
+                }
+            }
 
             if (isPlacing) {
                 UpdatePlacing();
@@ -101,14 +130,13 @@ public class BuildInterface : MonoBehaviour {
     }
     void SetUpUI() {
         ClearUIBtns();
-        for (int i = 0; i < BuildingManager.Instance.buildingPrefabs.Length; i++) {
-            // BuildingManager.Instance.buildingPrefabs[i];
+        foreach (BuildingType buildingType in BuildingManager.Instance.buildingTypes) {
             GameObject buildingBtnGo = Instantiate(buildingToggleBtnPrefab, buildingButtonHolder);
             BuildingToggleUI buildingToggleUI = buildingBtnGo.GetComponent<BuildingToggleUI>();
             buildingToggleUI.Init(new BuildingToggleUI.BToggleInitData() {
                 buildInterface = this,
                 toggleGroup = buildingToggleGroup,
-                // todo
+                buildingType = buildingType,
             });
         }
         buildingToggleGroup.SetAllTogglesOff();
@@ -128,40 +156,66 @@ public class BuildInterface : MonoBehaviour {
         }
     }
 
-    public void StartPlacingBuilding(GameObject buildingPrefab) {
+    void RemoveBuilding() {
         if (!isBuilding) return;
-        this.placingPrefab = buildingPrefab;
-        if (buildingPrefab != null) {
+        if (cursorOverTile != null && cursorOverTile.HasBuilding) {
+            // todo
+            cursorOverTile.RemoveBuilding();
+        }
+    }
+    void EyeDropperSample() {
+        if (!isBuilding) return;
+        if (cursorOverTile != null && cursorOverTile.HasBuilding) {
+            placingType = cursorOverTile.building.buildingType;
             StartPlacing();
+        }
+    }
+
+    public void StartPlacingBuilding(BuildingType buildingType) {
+        if (!isBuilding) return;
+        // Debug.Log("StartPlacingBuilding " + (buildingType?.name ?? "none"));
+        this.placingType = buildingType;
+        if (placingType != null) {
+            StartPlacing();
+        } else {
+            if (isPlacing) {
+                CancelPlacing();
+            }
         }
     }
     void StartPlacing() {
         isPlacing = true;
-        placingGhost = Instantiate(placingPrefab, transform);
+        placingGhost = Instantiate(placingType.buildingPrefab, transform);
         // todo disable physics and logic
         // todo make transp
         placingGhost.transform.position = cursorPos;
+        defLayer = placingGhost.layer;
         placingGhost.layer = previewLayer;
     }
     void FinishPlacing() {
+        Debug.Log("Finish placing");
         isPlacing = false;
         Vector3 targetPos = cursorPos;
         // snap to world grid
         Tile tile = WorldManager.Instance.GetTileAt(targetPos);
-        if (tile != null) {
-            if (tile.HasBuilding) {
-                // invalid
-                // todo set color validity
-            } else {
-                targetPos = tile.transform.position;
-                Quaternion rotation = GetCurrentRotation();
-                placingGhost.transform.position = targetPos;
-                placingGhost.transform.rotation = rotation;
-                // tile.building = 
-                // todo
-            }
+        if (tile != null && tile.CanPlaceBuilding(placingType)) {
+            targetPos = tile.transform.position;
+            Quaternion rotation = GetCurrentRotation();
+            placingGhost.transform.position = targetPos;
+            placingGhost.transform.rotation = rotation;
+            placingGhost.layer = defLayer;
+            tile.PlaceBuilding(placingGhost.GetComponent<Building>());
+        } else {
+            // invalid
+            // ? or just ignore click?
+            CancelPlacing();
         }
         placingGhost = null;
+        if (keepPlacingHold || keepPlacingToggle) {
+            StartPlacing();
+        } else {
+            placingType = null;
+        }
     }
     void CancelPlacing() {
         isPlacing = false;
@@ -171,20 +225,22 @@ public class BuildInterface : MonoBehaviour {
     void UpdatePlacing() {
         Vector3 targetPos = cursorPos;
         // snap to world grid
-        Tile tile = WorldManager.Instance.GetTileAt(targetPos);
-        if (tile != null) {
-            if (tile.HasBuilding) {
+        if (cursorOverTile != null) {
+            if (cursorOverTile.HasBuilding) {
                 // invalid
                 // todo set color validity
             } else {
-                targetPos = tile.transform.position;
+                targetPos = cursorOverTile.transform.position;
             }
         }
         Quaternion rotation = GetCurrentRotation();
-        if (ghostSmoothing > 0) {
-            targetPos = Vector3.Lerp(placingGhost.transform.position, targetPos, ghostSmoothing * Time.deltaTime);
+        if (ghostSmoothingPos > 0) {
+            targetPos = Vector3.Lerp(placingGhost.transform.position, targetPos, ghostSmoothingPos * Time.deltaTime);
         }
         placingGhost.transform.position = targetPos;
+        if (ghostSmoothingRot > 0) {
+            rotation = Quaternion.Lerp(placingGhost.transform.rotation, rotation, ghostSmoothingRot * Time.deltaTime);
+        }
         placingGhost.transform.rotation = rotation;
     }
 

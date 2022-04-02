@@ -5,11 +5,18 @@ using UnityEngine.UI;
 
 public class BuildingToggleUI : MonoBehaviour {
 
+    [System.Serializable]
+    public struct BToggleInitData {
+        public ToggleGroup toggleGroup;
+        public BuildingType buildingType;
+        public BuildInterface buildInterface;
+    }
+
     [SerializeField] TMPro.TMP_Text label;
     [SerializeField] Transform icon;
     [SerializeField] Toggle toggle;
-    
-    BToggleInitData toggleInitData;
+
+    [SerializeField, ReadOnly] BToggleInitData data;
 
     private void Reset() {
         toggle = GetComponent<Toggle>();
@@ -17,18 +24,18 @@ public class BuildingToggleUI : MonoBehaviour {
     private void Awake() {
         toggle ??= GetComponent<Toggle>();
     }
-    public struct BToggleInitData {
-        public ToggleGroup toggleGroup;
-        public GameObject buildingType;
-        public BuildInterface buildInterface;
-    }
     public void Init(BToggleInitData initData) {
-        toggleInitData = initData;
+        data = initData;
         toggle.group = initData.toggleGroup;
-        // todo 
+        label.text = initData.buildingType.name;
+        // ?
     }
-    public void OnToggled(bool value){
-        // toggleInitData.buildInterface.
+    public void OnToggled(bool value) {
+        if (value) {
+            data.buildInterface.StartPlacingBuilding(data.buildingType);
+        } else {
+            data.buildInterface.StartPlacingBuilding(null);
+        }
     }
 
 }

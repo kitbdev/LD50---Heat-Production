@@ -7,9 +7,16 @@ public class WorldManager : Singleton<WorldManager> {
     public RectInt bounds;
     [SerializeField] float tileSize = 2;
     [SerializeReference] GameObject tilePrefab;
+    [SerializeField] int extraTilesBorder;
+    [SerializeField] TileType extraTilesType;
 
-    Tile[] tiles;
+    [SerializeField][HideInInspector] Tile[] tiles;
 
+    [ContextMenu("CenterBounds")]
+    void CenterBounds() {
+        bounds.x = -bounds.width / 2;
+        bounds.y = -bounds.height / 2;
+    }
     [ContextMenu("Clear tiles")]
     void ClearTiles() {
         for (int i = transform.childCount - 1; i >= 0; i--) {
@@ -28,7 +35,9 @@ public class WorldManager : Singleton<WorldManager> {
         for (int y = 0; y < bounds.height; y++) {
             for (int x = 0; x < bounds.width; x++) {
                 GameObject ntile = Instantiate(tilePrefab, transform);
-                ntile.transform.position = TilePosToWorldPos(new Vector2Int(x, y));
+                Vector2Int tilePos = new Vector2Int(x, y) + bounds.min;
+                ntile.name = "Tile " + tilePos;
+                ntile.transform.position = TilePosToWorldPos(tilePos);
                 Tile tile = ntile.GetComponent<Tile>();
                 tilelist.Add(tile);
             }
@@ -50,15 +59,18 @@ public class WorldManager : Singleton<WorldManager> {
     }
     public Tile GetTileAt(Vector3 worldPos) {
         Vector2Int tilePos = WorldPosToTilePos(worldPos);
+        if (tilePos == null) return null;
         return GetTileAt(tilePos);
     }
     public Tile GetTileAt(Vector2Int tilePos) {
-        if (tilePos.x < bounds.xMin || tilePos.x > bounds.xMax ||
-            tilePos.y < bounds.yMin || tilePos.y > bounds.yMax) {
+        if (tilePos.x < bounds.xMin || tilePos.x >= bounds.xMax ||
+            tilePos.y < bounds.yMin || tilePos.y >= bounds.yMax) {
             // invalid position
             return null;
         }
-        int indx = tilePos.x + bounds.width * tilePos.y;
+        tilePos -= bounds.min;
+        int indx = tilePos.x + (bounds.width) * tilePos.y;
+        // Debug.Log($"i{indx} {tilePos} {tiles.Length} {bounds}");
         return tiles[indx];
     }
 

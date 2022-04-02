@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[SelectionBase]
 public class Player : MonoBehaviour {
 
+    [Header("Move")]
     public float moveSpeed;
     public float turnRate;
-
 
     [SerializeField, ReadOnly] Vector3 vel;
     [Header("Input")]

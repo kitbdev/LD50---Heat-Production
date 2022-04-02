@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager> {
 
-        
-    public void Exit(){
+    public Player player;
+    public Inventory playerInventory;
+
+    public void Exit() {
+        Application.Quit();
     }
 }
