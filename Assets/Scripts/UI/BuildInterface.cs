@@ -5,12 +5,14 @@ using UnityEngine.InputSystem;
 
 public class BuildInterface : MonoBehaviour {
 
-    [SerializeField] Controls controls;
     [SerializeField] GameObject buildingUI;
     [SerializeField] bool isBuilding = false;
     [SerializeField, ReadOnly] int curRotation;
+    
+    Controls controls;
 
     private void OnEnable() {
+        controls = new Controls();
         controls.Player.BuildMode.Enable();
         controls.Player.BuildMode.performed += c => {
             if (isBuilding) {

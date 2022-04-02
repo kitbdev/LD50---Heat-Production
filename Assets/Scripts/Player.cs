@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour {
 
     public float moveSpeed;
+    public float turnRate;
 
 
     [SerializeField, ReadOnly] Vector3 vel;
@@ -17,13 +18,13 @@ public class Player : MonoBehaviour {
 
     private void Awake() {
         cc = GetComponent<CharacterController>();
-        controls = new Controls();
     }
 
     private void OnEnable() {
+        controls = new Controls();
         controls.Enable();
         controls.Player.Move.performed += c => moveInput = c.ReadValue<Vector2>();
-        controls.Player.Move.performed += c => moveInput = Vector2.zero;
+        controls.Player.Move.canceled += c => moveInput = Vector2.zero;
     }
     private void OnDisable() {
         controls.Disable();
@@ -33,7 +34,13 @@ public class Player : MonoBehaviour {
         // move
         vel = new Vector3(moveInput.x, 0, moveInput.y);
         vel = Vector3.ClampMagnitude(vel, 1f);
-        vel *= moveSpeed;
+        vel *= moveSpeed * Time.deltaTime;
         cc.Move(vel);
+        if (cc.velocity.sqrMagnitude >= 0.01f) {
+            Vector3 dir = cc.velocity.normalized;
+            Quaternion newRot = Quaternion.LookRotation(dir, Vector3.up);
+            if (turnRate > 0) newRot = Quaternion.Lerp(transform.rotation, newRot, Time.deltaTime * turnRate);
+            transform.rotation = newRot;
+        }
     }
 }

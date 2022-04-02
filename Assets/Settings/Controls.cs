@@ -125,6 +125,24 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Zoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""a35461c3-f452-4e82-90dc-bca1230b6fe9"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""RecenterCam"",
+                    ""type"": ""Button"",
+                    ""id"": ""29a16e85-339d-415b-9741-78cc9834a698"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -543,6 +561,28 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""64a88f90-5a36-4709-b66c-5d3f07daa298"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0e5677e8-e4d1-4746-9516-e318eb0985d9"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RecenterCam"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1141,6 +1181,8 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         m_Player_BuildMode = m_Player.FindAction("BuildMode", throwIfNotFound: true);
         m_Player_OpenManagementScreen = m_Player.FindAction("OpenManagementScreen", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+        m_Player_Zoom = m_Player.FindAction("Zoom", throwIfNotFound: true);
+        m_Player_RecenterCam = m_Player.FindAction("RecenterCam", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1223,6 +1265,8 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_BuildMode;
     private readonly InputAction m_Player_OpenManagementScreen;
     private readonly InputAction m_Player_Pause;
+    private readonly InputAction m_Player_Zoom;
+    private readonly InputAction m_Player_RecenterCam;
     public struct PlayerActions
     {
         private @Controls m_Wrapper;
@@ -1238,6 +1282,8 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         public InputAction @BuildMode => m_Wrapper.m_Player_BuildMode;
         public InputAction @OpenManagementScreen => m_Wrapper.m_Player_OpenManagementScreen;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
+        public InputAction @Zoom => m_Wrapper.m_Player_Zoom;
+        public InputAction @RecenterCam => m_Wrapper.m_Player_RecenterCam;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1280,6 +1326,12 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Pause.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
                 @Pause.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
                 @Pause.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
+                @Zoom.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnZoom;
+                @Zoom.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnZoom;
+                @Zoom.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnZoom;
+                @RecenterCam.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRecenterCam;
+                @RecenterCam.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRecenterCam;
+                @RecenterCam.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRecenterCam;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -1317,6 +1369,12 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
+                @Zoom.started += instance.OnZoom;
+                @Zoom.performed += instance.OnZoom;
+                @Zoom.canceled += instance.OnZoom;
+                @RecenterCam.started += instance.OnRecenterCam;
+                @RecenterCam.performed += instance.OnRecenterCam;
+                @RecenterCam.canceled += instance.OnRecenterCam;
             }
         }
     }
@@ -1484,6 +1542,8 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         void OnBuildMode(InputAction.CallbackContext context);
         void OnOpenManagementScreen(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnZoom(InputAction.CallbackContext context);
+        void OnRecenterCam(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
