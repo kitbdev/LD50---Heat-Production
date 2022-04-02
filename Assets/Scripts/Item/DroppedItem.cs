@@ -5,4 +5,5 @@ using UnityEngine;
 [SelectionBase]
 public class DroppedItem : MonoBehaviour {
     public Item item;
+    // public ItemStack itemStack;
 }

@@ -1,0 +1,60 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+
+public class Timer : MonoBehaviour {
+
+    public bool startOnStart = false;
+    /// <summary>
+    /// duration in seconds
+    /// </summary>
+    [Min(0.001f)]
+    public float duration = 1;
+    public bool autoRestart = false;
+    public bool useUnscaledTime = false;
+
+    [SerializeField, ReadOnly] bool isRunning = false;
+    [SerializeField, ReadOnly] float timer = 0f;
+
+    [Header("Events")]
+    public UnityEvent onTimerUpdate;// for ui and stuff
+    public UnityEvent onTimerComplete;
+
+    public bool IsRunning => isRunning;
+    public float Progress => isRunning ? Mathf.Clamp01(timer / duration) : 0f;
+
+    private void Start() {
+        if (startOnStart) {
+            StartTimer();
+        }
+    }
+    private void Update() {
+        if (isRunning) {
+            timer += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            onTimerUpdate?.Invoke();
+            if (timer >= duration) {
+                // trigger
+                onTimerComplete?.Invoke();
+                if (autoRestart) {
+                    StartTimer();
+                } else {
+                    StopTimer();
+                }
+            }
+        }
+    }
+
+    public void StartTimer() {
+        isRunning = true;
+        timer = 0;
+        onTimerUpdate?.Invoke();
+    }
+    public void StopTimer() {
+        isRunning = false;
+    }
+    // doesnt reset timer
+    public void ResumeTimer() {
+        isRunning = true;
+    }
+}
