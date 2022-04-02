@@ -8,8 +8,6 @@ using UnityEngine.InputSystem;
 public class PauseManager : Singleton<PauseManager> {
 
     [ReadOnly] public bool isPaused = false;
-    [Min(0)]
-    [SerializeField] float timeLerpDur = 0;
     [SerializeField] bool pauseOnStart = false;
     public bool enablePauseButton = true;
     public bool allowUnpausing = true;
@@ -32,7 +30,7 @@ public class PauseManager : Singleton<PauseManager> {
     }
     private void OnDisable() {
         if (togglePauseButton) {
-            togglePauseButton.action.Dispose();
+            togglePauseButton.action.Disable();
         }
     }
     private void Start() {
@@ -54,31 +52,12 @@ public class PauseManager : Singleton<PauseManager> {
     public void SetPaused(bool pause = true) {
         isPaused = pause;
         float targetScale = isPaused ? 0 : 1;
-        if (timeLerpDur > 0) {
-            StopCoroutine(pauseLerpCo);
-            pauseLerpCo = SetTimeScaleCo(targetScale);
-            StartCoroutine(pauseLerpCo);
-        } else {
-            Time.timeScale = targetScale;
-        }
+        Time.timeScale = targetScale;
         if (isPaused) {
             pauseEvent.Invoke();
         } else {
             unpauseEvent.Invoke();
         }
-    }
-    IEnumerator SetTimeScaleCo(float target) {
-        float initial = Time.timeScale;
-        float progress = 0;
-        float interp = initial;
-        float scaleSpeed = 1f / timeLerpDur;
-        while (progress < 1) {
-            yield return null;
-            progress += Time.unscaledDeltaTime * scaleSpeed;
-            interp = Mathf.Lerp(initial, target, progress);
-            Time.timeScale = interp;
-        }
-        Time.timeScale = target;
     }
     private void OnApplicationFocus(bool hasFocus) {
         if (hasFocus) {
