@@ -45,7 +45,10 @@ public class CrafterBuilding : Building, IHoldsItem, IAccecptsItem {
         }
     }
     void CraftItem() {
-        Debug.Log("crafting!");
+        // Debug.Log("crafting!");
+        if (selectedRecipe == null) {
+            return;
+        }
         if (inputInventory.HasItems(selectedRecipe.requiredItems)) {// todo seperate types? enforce them
             if (outputInventory.HasSpaceFor(selectedRecipe.producedItems)) {
                 inputInventory.TakeItems(selectedRecipe.requiredItems);
@@ -64,4 +67,15 @@ public class CrafterBuilding : Building, IHoldsItem, IAccecptsItem {
         }
     }
 
+    public override bool HasBuildingScreen => true;
+    public override Inventory GetFirstInv() {
+        return inputInventory;
+    }
+    public override Inventory GetSecondInv() {
+        return outputInventory;
+    }
+    public override bool CanTakeFromFirst => true;
+    public override bool CanPutInFirst => true;
+    public override bool CanTakeFromSecond => true;
+    public override bool CanPutInSecond => false;
 }

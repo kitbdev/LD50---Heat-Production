@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 
+[DefaultExecutionOrder(10)]// after inventory
 public class ShowInventoryUI : MonoBehaviour, IPointerMoveHandler {
 
     [SerializeField] GameObject itemSlotPrefab;
@@ -16,9 +17,17 @@ public class ShowInventoryUI : MonoBehaviour, IPointerMoveHandler {
 
     List<ItemSlotUI> itemSlotUIs = new List<ItemSlotUI>();
 
+    public Inventory Inventory => inventory;
+
+    private void Awake() {
+        ClearItemSlots();
+        itemHoverText.gameObject.SetActive(false);
+    }
     private void OnEnable() {
+        // Debug.Log(name + " enable " + inventory, gameObject);
         if (inventory != null) {
             inventory.OnInventoryUpdateEvent.AddListener(UpdateInv);
+            CreateItemSlots();
             UpdateInv();
         }
         if (shiftMoreButton != null) shiftMoreButton.action.Enable();
@@ -43,6 +52,7 @@ public class ShowInventoryUI : MonoBehaviour, IPointerMoveHandler {
 
     public void UpdateInv() {
         if (inventory == null) return;
+            // Debug.Log($"update Show Inv {name} {inventory.name} {inventory.numSlots}", gameObject);
         if (inventory.numSlots != itemSlotHolder.childCount) {
             CreateItemSlots();
         }
@@ -64,11 +74,11 @@ public class ShowInventoryUI : MonoBehaviour, IPointerMoveHandler {
             GameObject itemSlotGO = Instantiate(itemSlotPrefab, itemSlotHolder);
             ItemSlotUI itemSlotUI = itemSlotGO.GetComponent<ItemSlotUI>();
             itemSlotUI.Init(this);
+            itemSlotUI.UpdateItem(inventory.itemSlots[i].itemStack);
             itemSlotUIs.Add(itemSlotUI);
         }
     }
     void UpdateSlots() {
-
         for (int i = 0; i < inventory.numSlots; i++) {
             ItemSlotUI itemSlotUI = itemSlotUIs[i];
             if (i >= inventory.itemSlots.Length) {

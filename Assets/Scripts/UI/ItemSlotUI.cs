@@ -14,7 +14,7 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
     ShowInventoryUI showInventoryUI;
     [ReadOnly] public ItemStack itemStack;
-    [SerializeField, ReadOnly] bool isHovered = false;
+    // [SerializeField, ReadOnly] bool isHovered = false;
 
     private void Awake() {
         SetSelect(false);
@@ -37,14 +37,14 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
-        isHovered = true;
+        // isHovered = true;
         // showInventoryUI?.OnHovered(transform.GetSiblingIndex());
         // selectedGo.SetActive(isHovered);
         nameText.gameObject.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        isHovered = false;
+        // isHovered = false;
         // showInventoryUI?.OnUnHovered(transform.GetSiblingIndex());
         // selectedGo.SetActive(isHovered);
         nameText.gameObject.SetActive(false);

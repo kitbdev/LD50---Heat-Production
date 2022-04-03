@@ -9,6 +9,8 @@ public class BuildingScreen : MonoBehaviour {
     [SerializeField] TMPro.TMP_Text descText;
     [SerializeField] ShowInventoryUI showInv;
     [SerializeField] ShowInventoryUI secondShowInv;// for outputs or such
+    [SerializeField] ShowInventoryUI playerInv;
+    [SerializeField] GameObject defInvGo;
 
     MenuScreen menuScreen;
 
@@ -18,6 +20,10 @@ public class BuildingScreen : MonoBehaviour {
 
     public void SetShown(bool show) {
         menuScreen.SetShown(show);
+        if (defInvGo != null) {
+            // hide default inventory
+            defInvGo.SetActive(!show);
+        }
     }
 
     public void UpdateUI() {
@@ -36,8 +42,11 @@ public class BuildingScreen : MonoBehaviour {
         } else {
             secondShowInv.gameObject.SetActive(false);
         }
-        if (building.BiDirectionalFirstInv) {
-            showInv.secondInventory = GameManager.Instance.playerInventory;
-        }
+        playerInv.secondInventory = building.CanPutInFirst ? showInv.Inventory : (building.CanPutInSecond ? secondShowInv.Inventory : null);
+        showInv.secondInventory = building.CanTakeFromFirst ? GameManager.Instance.playerInventory : null;
+        secondShowInv.secondInventory = building.CanTakeFromSecond ? GameManager.Instance.playerInventory : null;
+        // if (building.BiDirectionalFirstInv) {
+        //     showInv.secondInventory = GameManager.Instance.playerInventory;
+        // }
     }
 }

@@ -104,6 +104,9 @@ public class Building : MonoBehaviour {
     public virtual string GetDescription() {
         return "";
     }
-    public virtual bool BiDirectionalFirstInv => true;
+    public virtual bool CanTakeFromFirst => false;
+    public virtual bool CanTakeFromSecond => false;
+    public virtual bool CanPutInFirst => false;
+    public virtual bool CanPutInSecond => false;
 
 }

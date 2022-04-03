@@ -41,8 +41,10 @@ public class ProducerBuilding : Building, IHoldsItem {
         }
     }
 
-    public override Inventory GetSecondInv() {
+    public override bool HasBuildingScreen => true;
+    public override Inventory GetFirstInv() {
         return inventory;
     }
-    public override bool BiDirectionalFirstInv => false;
+    public override bool CanTakeFromFirst => true;
+    public override bool CanPutInFirst => false;
 }

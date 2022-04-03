@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [System.Serializable]
+[DefaultExecutionOrder(-1)]
 public class Inventory : MonoBehaviour {
 
     [System.Serializable]
@@ -35,6 +36,7 @@ public class Inventory : MonoBehaviour {
             itemslot.itemStack.itemType = null;
             itemslot.itemStack.count = 0; ;
         }
+        Debug.Log($"Init {name} {numSlots}", gameObject);
     }
     IEnumerable<ItemSlot> GetItemStacksOfTypes(params ItemType[] matchingItemTypes) =>
         itemSlots.Where(sl => matchingItemTypes.Contains(sl.itemStack.itemType));
