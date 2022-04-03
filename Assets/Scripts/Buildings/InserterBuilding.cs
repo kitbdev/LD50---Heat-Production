@@ -39,6 +39,7 @@ public class InserterBuilding : Building {
 
 
     protected override void Awake() {
+        base.Awake();
         processTimer = GetComponent<Timer>();
     }
 
@@ -78,6 +79,7 @@ public class InserterBuilding : Building {
                 tobuilding.ToInventory.AddItem(heldItem.item);
                 Destroy(heldItem.gameObject);
                 heldItem = null;
+                animator.SetTrigger("Insert");
             }
         }
     }

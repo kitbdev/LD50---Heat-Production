@@ -17,6 +17,7 @@ public class CrafterBuilding : Building, IHoldsItem, IAccecptsItem {
     public Inventory ToInventory => inputInventory;
 
     protected override void Awake() {
+        base.Awake();
         processTimer = GetComponent<Timer>();
     }
     public override void OnPlaced() {

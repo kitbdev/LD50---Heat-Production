@@ -23,6 +23,7 @@ public class Building : MonoBehaviour {
     [Space]
     [SerializeField] TMPro.TMP_Text labelName;
     public QuickOutline quickOutline;
+    protected Animator animator;
 
     // [Header("Runtime")]
     [SerializeField] bool isPlaced = false;
@@ -52,6 +53,7 @@ public class Building : MonoBehaviour {
         }
     }
     protected virtual void Awake() {
+        animator = GetComponent<Animator>();
         // NewMethod();
     }
     // private void Start() {

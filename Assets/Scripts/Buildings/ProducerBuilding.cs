@@ -14,6 +14,7 @@ public class ProducerBuilding : Building, IHoldsItem {
     public Inventory FromInventory => inventory;
 
     protected override void Awake() {
+        base.Awake();
         processTimer = GetComponent<Timer>();
         inventory = GetComponent<Inventory>();
     }
@@ -21,18 +22,22 @@ public class ProducerBuilding : Building, IHoldsItem {
         base.OnPlaced();
         processTimer.onTimerComplete.AddListener(ProduceItem);
         processTimer.StartTimer();
+        animator.SetBool("Active", true);
     }
     public override void OnRemoved() {
         processTimer.onTimerComplete.RemoveListener(ProduceItem);
         processTimer.StopTimer();
+        animator.SetBool("Active", false);
         base.OnRemoved();
     }
     void ProduceItem() {
         // Debug.Log("Producing!");
         if (inventory.HasSpaceFor(productionItem)) {
             inventory.AddItem(new Item(productionItem));
+            animator.SetBool("Active", true);
         } else {
             // is full
+            animator.SetBool("Active", false);
         }
     }
 }
