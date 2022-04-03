@@ -10,7 +10,7 @@ public class Item {
     }
 }
 [System.Serializable]
-public class ItemStack {
+public struct ItemStack {
     public ItemType itemType;
     public int count;
     
@@ -22,7 +22,7 @@ public class ItemStack {
     public override string ToString() {
         return IsEmpty ? "Empty Stack" : (count + " " + itemType.ToString() + "s stack");
     }
-    
+
     public ItemStack Copy() {
         return new ItemStack() {
             count = count,

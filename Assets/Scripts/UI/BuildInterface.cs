@@ -185,18 +185,19 @@ public class BuildInterface : MonoBehaviour {
             }
         }
 
-        if (isBuilding) {
-            // show tile cursor is over
-            if (cursorText != null) {
-                if (cursorOverTile != null) {
-                    cursorText.text = cursorOverTile.groundTileType.name;
-                    cursorText.transform.parent.gameObject.SetActive(true);
-                    // todo show other info ?
-                } else {
-                    cursorText.text = "";
-                    cursorText.transform.parent.gameObject.SetActive(false);
-                }
+        // show tile cursor is over
+        if (cursorText != null) {
+            if (cursorOverTile != null) {
+                cursorText.text = cursorOverTile.groundTileType.name;
+                cursorText.transform.parent.gameObject.SetActive(true);
+                // todo show other info ?
+            } else {
+                cursorText.text = "";
+                cursorText.transform.parent.gameObject.SetActive(false);
             }
+        }
+
+        if (isBuilding) {
 
             if (isPlacing) {
                 UpdatePlacing();

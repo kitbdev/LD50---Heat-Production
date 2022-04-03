@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 [SelectionBase]
 public class Building : MonoBehaviour {
@@ -26,6 +27,7 @@ public class Building : MonoBehaviour {
     [SerializeField] TMPro.TMP_Text labelName;
     public QuickOutline quickOutline;
     protected Animator animator;
+    [SerializeField] GameObject previewOrSelectOnlyGo;
 
     // [Header("Runtime")]
     [SerializeField] bool isPlaced = false;
@@ -57,8 +59,9 @@ public class Building : MonoBehaviour {
     protected virtual void Awake() {
         animator = GetComponent<Animator>();
         // NewMethod();
+        if (previewOrSelectOnlyGo != null) previewOrSelectOnlyGo.SetActive(true);
     }
-    // private void Start() {
+    // private void Start() {//debug
     //     OnPlaced();
     // }
     protected virtual void OnEnable() {
@@ -76,19 +79,22 @@ public class Building : MonoBehaviour {
     }
 
     public virtual void OnPlaced() {
-        // todo stop looking like a ghost?
         IsPlaced = true;
-        // todo anim
+        //? stop looking like a ghost?
+        if (previewOrSelectOnlyGo != null) previewOrSelectOnlyGo.SetActive(false);
     }
     public virtual void OnRemoved() {
         IsPlaced = false;
+        if (previewOrSelectOnlyGo != null) previewOrSelectOnlyGo.SetActive(true);
     }
 
     public void OnHover() {
         labelName.transform.parent.gameObject.SetActive(true);
+        if (previewOrSelectOnlyGo != null) previewOrSelectOnlyGo.SetActive(true);
     }
     public void OnUnHover() {
         labelName.transform.parent.gameObject.SetActive(false);
+        if (previewOrSelectOnlyGo != null && isPlaced) previewOrSelectOnlyGo.SetActive(false);
     }
 
 
@@ -108,5 +114,6 @@ public class Building : MonoBehaviour {
     public virtual bool CanTakeFromSecond => false;
     public virtual bool CanPutInFirst => false;
     public virtual bool CanPutInSecond => false;
+    public virtual UnityEvent<float> sliderUpdateAction => null;
 
 }

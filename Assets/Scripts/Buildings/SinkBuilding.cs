@@ -23,11 +23,13 @@ public class SinkBuilding : Building, IAccecptsItem {
     public override void OnPlaced() {
         base.OnPlaced();
         processTimer.onTimerComplete.AddListener(EatItem);
+        processTimer.onTimerUpdate.AddListener(UpdateProgressBar);
         inputInventory.OnInventoryUpdateEvent.AddListener(InvUpdate);
         processTimer.StartTimer();
     }
     public override void OnRemoved() {
         processTimer.onTimerComplete.RemoveListener(EatItem);
+        processTimer.onTimerUpdate.RemoveListener(UpdateProgressBar);
         inputInventory.OnInventoryUpdateEvent.RemoveListener(InvUpdate);
         processTimer.StopTimer();
         base.OnRemoved();
@@ -62,4 +64,8 @@ public class SinkBuilding : Building, IAccecptsItem {
     }
     public override bool CanTakeFromFirst => true;
     public override bool CanPutInFirst => true;
+    
+    UnityEvent<float> sliderEvent = new UnityEvent<float>();
+    public void UpdateProgressBar(float v) => sliderEvent?.Invoke(v);
+    public override UnityEvent<float> sliderUpdateAction => sliderEvent;
 }

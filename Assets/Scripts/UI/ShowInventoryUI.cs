@@ -52,15 +52,11 @@ public class ShowInventoryUI : MonoBehaviour, IPointerMoveHandler {
 
     public void UpdateInv() {
         if (inventory == null) return;
-            // Debug.Log($"update Show Inv {name} {inventory.name} {inventory.numSlots}", gameObject);
+        // Debug.Log($"updating Show Inv {name} {inventory.name} {inventory.numSlots}", gameObject);
         if (inventory.numSlots != itemSlotHolder.childCount) {
             CreateItemSlots();
         }
-        if (inventory.numSlots != itemSlotHolder.childCount) {
-            // todo why
-            // sometimes it takes a while to init
-            UpdateSlots();
-        }
+        UpdateSlots();
     }
     void ClearItemSlots() {
         for (int i = itemSlotHolder.childCount - 1; i >= 0; i--) {

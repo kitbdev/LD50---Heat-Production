@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ProducerBuilding : Building, IHoldsItem {
 
@@ -21,14 +22,27 @@ public class ProducerBuilding : Building, IHoldsItem {
     public override void OnPlaced() {
         base.OnPlaced();
         processTimer.onTimerComplete.AddListener(ProduceItem);
+        processTimer.onTimerUpdate.AddListener(UpdateProgressBar);
+        inventory.OnInventoryUpdateEvent.AddListener(InvUpdate);
         processTimer.StartTimer();
         animator.SetBool("Active", true);
     }
     public override void OnRemoved() {
         processTimer.onTimerComplete.RemoveListener(ProduceItem);
+        processTimer.onTimerUpdate.RemoveListener(UpdateProgressBar);
+        inventory.OnInventoryUpdateEvent.RemoveListener(InvUpdate);
         processTimer.StopTimer();
         animator.SetBool("Active", false);
         base.OnRemoved();
+    }
+    void InvUpdate() {
+        // Debug.Log("updating "+name+" inv "+inventory);
+        if (!processTimer.IsRunning) {
+            if (inventory.HasSpaceFor(productionItem)) {
+                // ProduceItem();
+                processTimer.ResumeTimer();
+            }
+        }
     }
     void ProduceItem() {
         // Debug.Log("Producing!");
@@ -38,6 +52,7 @@ public class ProducerBuilding : Building, IHoldsItem {
         } else {
             // is full
             animator.SetBool("Active", false);
+            processTimer.PauseTimer();
         }
     }
 
@@ -47,4 +62,8 @@ public class ProducerBuilding : Building, IHoldsItem {
     }
     public override bool CanTakeFromFirst => true;
     public override bool CanPutInFirst => false;
+
+    UnityEvent<float> sliderEvent = new UnityEvent<float>();
+    public void UpdateProgressBar(float v) => sliderEvent?.Invoke(v);
+    public override UnityEvent<float> sliderUpdateAction => sliderEvent;
 }

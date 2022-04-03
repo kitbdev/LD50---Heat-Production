@@ -12,6 +12,6 @@ public class ResetRotation : MonoBehaviour {
     }
 
     public void ResetRot() {
-        transform.localRotation = Quaternion.identity;
+        transform.rotation = Quaternion.identity;
     }
 }

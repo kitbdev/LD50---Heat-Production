@@ -36,7 +36,7 @@ public class Inventory : MonoBehaviour {
             itemslot.itemStack.itemType = null;
             itemslot.itemStack.count = 0; ;
         }
-        Debug.Log($"Init {name} {numSlots}", gameObject);
+        // Debug.Log($"Init {name} {numSlots}", gameObject);
     }
     IEnumerable<ItemSlot> GetItemStacksOfTypes(params ItemType[] matchingItemTypes) =>
         itemSlots.Where(sl => matchingItemTypes.Contains(sl.itemStack.itemType));
@@ -102,7 +102,7 @@ public class Inventory : MonoBehaviour {
         }
         return true;
     }
-    public void AddItems(params ItemStack[] itemStacks) => AddItems(itemStacks);
+    public void AddItems(params ItemStack[] itemStacks) => AddItems((IEnumerable<ItemStack>)itemStacks);
     public void AddItems(IEnumerable<ItemStack> itemStacks) {
         foreach (var itemStack in itemStacks) {
             AddItemNoEvent(itemStack.itemType, itemStack.count);
@@ -148,12 +148,16 @@ public class Inventory : MonoBehaviour {
     public IEnumerable<Item> TakeFirstItemOfTypeNoNotify(ItemType type, int count) {
         // this makes sure we dont overflow an item
         List<Item> items = new List<Item>();
-        ItemSlot itemSlot = GetFirstNotEmptyOrFullSlotOfType(type);
+        ItemSlot itemSlot = GetFirstNotEmptySlotOfType(type);
+        if (itemSlot == null) {
+            Debug.LogWarning("Failed to take item " + type);
+            return null;
+        }
         for (int i = 0; i < count; i++) {
-            itemSlot.itemStack.count++;
+            itemSlot.itemStack.count--;
             items.Add(new Item(type));
-            if (itemSlot.itemStack.IsFull) {
-                itemSlot = GetFirstNotEmptyOrFullSlotOfType(type);
+            if (itemSlot.itemStack.IsEmpty) {
+                itemSlot = GetFirstNotEmptySlotOfType(type);
             }
         }
         return items;
@@ -175,8 +179,8 @@ public class Inventory : MonoBehaviour {
         // this inventory needs to have all the from items
         if (!HasItems(itemStacks)) return;
         if (to.HasSpaceFor(itemStacks)) {
-            TakeItems(itemStacks);
-            to.AddItems(itemStacks);
+            TakeItems(itemStacks.Select(st => st.Copy()).ToArray());
+            to.AddItems(itemStacks.Select(st => st.Copy()).ToArray());
         } else {
             // otherwise transfer as many as we can
             foreach (var itemStack in itemStacks) {
@@ -229,5 +233,10 @@ public class Inventory : MonoBehaviour {
             return -a.itemStack.itemType.sortOrder + b.itemStack.itemType.sortOrder;
         });
         OnInventoryUpdateEvent?.Invoke();
+    }
+
+
+    public override string ToString() {
+        return "Inventory " + itemSlots.Aggregate("", (s, i) => s += i.ToString());
     }
 }

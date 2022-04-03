@@ -34,6 +34,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5384433750535101310, guid: 1ee6a79d9f64a634da59d3867ca00d19,
         type: 3}
+      propertyPath: typeIndex
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384433750535101310, guid: 1ee6a79d9f64a634da59d3867ca00d19,
+        type: 3}
       propertyPath: buildingType
       value: 
       objectReference: {fileID: 11400000, guid: 05a6e51a8e4eee34ba78824a3007093c,

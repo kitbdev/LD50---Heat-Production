@@ -16,6 +16,7 @@ public class MenuScreen : MonoBehaviour {
     [SerializeField] Selectable selectOnShow;
     [SerializeField] private MenuScreenGroup _menuScreenGroup;
     [SerializeField] bool recenterOnAwake = true;
+    [SerializeField] bool showOnTop = true;
     [SerializeField] ShowAction showOnStart = ShowAction.NONE;
 
     [ReadOnly] public bool isShown = false;
@@ -105,8 +106,10 @@ public class MenuScreen : MonoBehaviour {
         canvasGroup.interactable = shown;
         if (isShown) {
             selectOnShow?.Select();
-            // make sure we are on top of others
-            transform.SetAsLastSibling();
+            if (showOnTop) {
+                // make sure we are on top of others
+                transform.SetAsLastSibling();
+            }
             // only invoke events if state changed
             if (!wasShown) {
                 OnShownEvent?.Invoke();

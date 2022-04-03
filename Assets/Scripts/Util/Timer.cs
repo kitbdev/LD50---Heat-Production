@@ -18,7 +18,7 @@ public class Timer : MonoBehaviour {
     [SerializeField, ReadOnly] float timer = 0f;
 
     [Header("Events")]
-    public UnityEvent onTimerUpdate;// for ui and stuff
+    public UnityEvent<float> onTimerUpdate;// for ui and stuff
     public UnityEvent onTimerComplete;
 
     public bool IsRunning => isRunning;
@@ -32,7 +32,7 @@ public class Timer : MonoBehaviour {
     private void Update() {
         if (isRunning) {
             timer += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
-            onTimerUpdate?.Invoke();
+            onTimerUpdate?.Invoke(Progress);
             if (timer >= duration) {
                 // trigger
                 onTimerComplete?.Invoke();
@@ -48,11 +48,12 @@ public class Timer : MonoBehaviour {
     public void StartTimer() {
         isRunning = true;
         timer = 0;
-        onTimerUpdate?.Invoke();
+        onTimerUpdate?.Invoke(Progress);
     }
     public void StopTimer() {
         isRunning = false;
         timer = 0;
+        onTimerUpdate?.Invoke(Progress);
     }
     public void PauseTimer() {
         isRunning = false;

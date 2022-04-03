@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CrafterBuilding : Building, IHoldsItem, IAccecptsItem {
 
@@ -25,12 +26,14 @@ public class CrafterBuilding : Building, IHoldsItem, IAccecptsItem {
         processTimer.onTimerComplete.AddListener(CraftItem);
         inputInventory.OnInventoryUpdateEvent.AddListener(InvUpdate);
         outputInventory.OnInventoryUpdateEvent.AddListener(InvUpdate);
+        processTimer.onTimerUpdate.AddListener(UpdateProgressBar);
         processTimer.StartTimer();
     }
     public override void OnRemoved() {
         processTimer.onTimerComplete.RemoveListener(CraftItem);
         inputInventory.OnInventoryUpdateEvent.RemoveListener(InvUpdate);
         outputInventory.OnInventoryUpdateEvent.RemoveListener(InvUpdate);
+        processTimer.onTimerUpdate.RemoveListener(UpdateProgressBar);
         processTimer.StopTimer();
         base.OnRemoved();
     }
@@ -78,4 +81,9 @@ public class CrafterBuilding : Building, IHoldsItem, IAccecptsItem {
     public override bool CanPutInFirst => true;
     public override bool CanTakeFromSecond => true;
     public override bool CanPutInSecond => false;
+
+    UnityEvent<float> sliderEvent = new UnityEvent<float>();
+    public void UpdateProgressBar(float v) => sliderEvent?.Invoke(v);
+    public override UnityEvent<float> sliderUpdateAction => sliderEvent;
+
 }
