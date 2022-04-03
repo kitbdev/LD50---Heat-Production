@@ -12,6 +12,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5384433749805967168, guid: 1ee6a79d9f64a634da59d3867ca00d19,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5384433749805967175, guid: 1ee6a79d9f64a634da59d3867ca00d19,
         type: 3}
       propertyPath: m_text
@@ -115,6 +120,7 @@ MonoBehaviour:
   buildingRecipe:
     requiredItems: []
   labelName: {fileID: 2804139199855796642}
+  quickOutline: {fileID: 5181316678181476750}
   isPlaced: 0
   tile: {fileID: 0}
   inventory: {fileID: 6251543788316857745}
@@ -145,6 +151,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5181316678181476750 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3149327136527507307, guid: 1ee6a79d9f64a634da59d3867ca00d19,
+    type: 3}
+  m_PrefabInstance: {fileID: 7805604884570965733}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2804139199529016733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &9165801574182061152

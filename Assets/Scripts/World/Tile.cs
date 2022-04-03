@@ -24,9 +24,13 @@ public class Tile : MonoBehaviour {
         _groundTileType = tileType;
         // todo fix go
     }
-    public bool CanPlaceBuilding(Building building) {
-        return !HasBuilding 
-            && (!groundTileType.blocksBuildings || groundTileType.allowedBuildingTypes.Contains(building));
+    public bool CanPlaceBuilding(Building buildingType) {
+        return !HasBuilding
+            // tile type accepts buildings
+            && (!groundTileType.blocksBuildings || groundTileType.allowedBuildingTypes.Contains(buildingType))
+            // player is not standing here
+            && WorldManager.Instance.WorldPosToTilePos(GameManager.Instance.player.transform.position) != mapPos
+            ;
     }
     public void PlaceBuilding(Building building) {
         this.building = building;

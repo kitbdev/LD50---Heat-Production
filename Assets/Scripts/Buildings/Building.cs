@@ -22,6 +22,7 @@ public class Building : MonoBehaviour {
     // local
     [Space]
     [SerializeField] TMPro.TMP_Text labelName;
+    public QuickOutline quickOutline;
 
     // [Header("Runtime")]
     [SerializeField] bool isPlaced = false;

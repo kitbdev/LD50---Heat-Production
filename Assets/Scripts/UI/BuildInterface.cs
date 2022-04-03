@@ -11,10 +11,14 @@ public class BuildInterface : MonoBehaviour {
     [SerializeField] GameObject buildingToggleBtnPrefab;
     [SerializeField] UnityEngine.UI.ToggleGroup buildingToggleGroup;
 
+    [SerializeField] Color selectedColor;
+    [SerializeField] Color validGhostColor;
+    [SerializeField] Color invalidGhostColor;
 
     [Header("Placing")]
     [Layer][SerializeField] int previewLayer;
     [SerializeField] Transform cursorT;
+    [SerializeField] TMPro.TMP_Text cursorText;
     [SerializeField] int ghostSmoothingPos = 20;
     [SerializeField] int ghostSmoothingRot = 40;
     // [Space]
@@ -27,9 +31,12 @@ public class BuildInterface : MonoBehaviour {
     [SerializeField, ReadOnly] bool keepPlacingToggle = false;
     int defLayer;
 
-    GameObject placingGhost;
-    // Building placingGhostBuilding;
-    Building placingType;
+    [SerializeField, ReadOnly] GameObject placingGhost;
+    [SerializeField, ReadOnly] Building placingGhostBuilding;
+    [SerializeField, ReadOnly] Building placingType;
+
+    // for deletion
+    [SerializeField, ReadOnly] Building selectedBuilding;
 
     [SerializeField] Camera cam;
     Controls controls;
@@ -53,6 +60,20 @@ public class BuildInterface : MonoBehaviour {
         controls.Player.PlaceBuilding.performed += c => {
             if (isPlacing) {
                 FinishPlacing();
+            } else {
+                // select building
+                if (cursorOverTile != null && cursorOverTile.HasBuilding) {
+                    DeselectBuilding();
+                    selectedBuilding = cursorOverTile.building;
+                    selectedBuilding.quickOutline.enabled = true;
+                    selectedBuilding.quickOutline.OutlineColor = selectedColor;
+                    // todo show more info
+                    // todo start dragging?
+                    // convert building to ghost and place it
+                } else {
+                    // deselect
+                    DeselectBuilding();
+                }
             }
         };
         controls.Player.RemoveBuilding.Enable();
@@ -70,6 +91,14 @@ public class BuildInterface : MonoBehaviour {
         controls.Player.KeepPlacingToggle.performed += c => { keepPlacingToggle = !keepPlacingToggle; };
         if (PauseManager.Instance) PauseManager.Instance.pauseEvent.AddListener(OnPauseEvent);
     }
+
+    private void DeselectBuilding() {
+        if (selectedBuilding != null) {
+            selectedBuilding.quickOutline.enabled = false;
+            selectedBuilding = null;
+        }
+    }
+
     private void OnDisable() {
         controls.Player.BuildMode.Disable();
         controls.Player.PlaceBuilding.Disable();
@@ -90,27 +119,37 @@ public class BuildInterface : MonoBehaviour {
     }
 
     private void Update() {
-        if (isBuilding) {
 
-            // get cursor pos
-            // if using mouse
-            // todo contoller
-            Vector2 mousepos = Mouse.current.position.ReadValue();
-            Ray mouseRay = cam.ScreenPointToRay(mousepos);
-            if (gamePlane.Raycast(mouseRay, out var dist)) {
-                cursorPos = mouseRay.GetPoint(dist);
-                // otherwise use last
+        // get cursor pos
+        // if using mouse
+        // todo contoller
+        Vector2 mousepos = Mouse.current.position.ReadValue();
+        Ray mouseRay = cam.ScreenPointToRay(mousepos);
+        if (gamePlane.Raycast(mouseRay, out var dist)) {
+            cursorPos = mouseRay.GetPoint(dist);
+            // otherwise use last
+        }
+
+        cursorOverTile = WorldManager.Instance.GetTileAt(cursorPos);
+        // todo also when not building?
+        // get building info
+        if (cursorT != null) {
+            if (cursorOverTile != null) {
+                cursorT.gameObject.SetActive(true);
+                cursorT.position = cursorOverTile.transform.position;
+            } else {
+                cursorT.gameObject.SetActive(false);
             }
+        }
 
-            cursorOverTile = WorldManager.Instance.GetTileAt(cursorPos);
-            // todo also when not building?
-            // get building info
-            if (cursorT != null) {
+        if (isBuilding) {
+            // show tile cursor is over
+            if (cursorText != null) {
                 if (cursorOverTile != null) {
-                    cursorT.gameObject.SetActive(true);
-                    cursorT.position = cursorOverTile.transform.position;
+                    cursorText.text = cursorOverTile.groundTileType.name;
+                    // todo show other info ?
                 } else {
-                    cursorT.gameObject.SetActive(false);
+                    cursorText.text = "";
                 }
             }
 
@@ -158,9 +197,8 @@ public class BuildInterface : MonoBehaviour {
 
     void RemoveBuilding() {
         if (!isBuilding) return;
-        if (cursorOverTile != null && cursorOverTile.HasBuilding) {
-            // todo
-            cursorOverTile.RemoveBuilding();
+        if (selectedBuilding != null) {
+            selectedBuilding.tile.RemoveBuilding();
         }
     }
     void EyeDropperSample() {
@@ -184,6 +222,7 @@ public class BuildInterface : MonoBehaviour {
         }
     }
     void StartPlacing() {
+        DeselectBuilding();
         isPlacing = true;
         placingGhost = Instantiate(BuildingManager.Instance.GetPrefabForBuildingType(placingType), transform);
         // todo disable physics and logic
@@ -191,6 +230,8 @@ public class BuildInterface : MonoBehaviour {
         placingGhost.transform.position = cursorPos;
         defLayer = placingGhost.layer;
         placingGhost.layer = previewLayer;
+        placingGhostBuilding = placingGhost.GetComponent<Building>();
+        placingGhostBuilding.quickOutline.enabled = true;
     }
     void FinishPlacing() {
         Debug.Log("Finish placing");
@@ -204,7 +245,8 @@ public class BuildInterface : MonoBehaviour {
             placingGhost.transform.position = targetPos;
             placingGhost.transform.rotation = rotation;
             placingGhost.layer = defLayer;
-            tile.PlaceBuilding(placingGhost.GetComponent<Building>());
+            tile.PlaceBuilding(placingGhostBuilding);
+            placingGhostBuilding.quickOutline.enabled = false;
         } else {
             // invalid
             // ? or just ignore click?
@@ -215,6 +257,7 @@ public class BuildInterface : MonoBehaviour {
             StartPlacing();
         } else {
             placingType = null;
+            placingGhostBuilding = null;
             buildingToggleGroup.SetAllTogglesOff();
         }
     }
@@ -223,16 +266,19 @@ public class BuildInterface : MonoBehaviour {
         buildingToggleGroup.SetAllTogglesOff();
         Destroy(placingGhost.gameObject);
         placingGhost = null;
+        placingGhostBuilding = null;
     }
     void UpdatePlacing() {
         Vector3 targetPos = cursorPos;
         // snap to world grid
         if (cursorOverTile != null) {
-            if (cursorOverTile.HasBuilding) {
+            if (cursorOverTile.CanPlaceBuilding(placingType)) {
+                targetPos = cursorOverTile.transform.position;
+                placingGhostBuilding.quickOutline.OutlineColor = validGhostColor;
+            } else {
+                placingGhostBuilding.quickOutline.OutlineColor = invalidGhostColor;
                 // invalid
                 // todo set color validity
-            } else {
-                targetPos = cursorOverTile.transform.position;
             }
         }
         Quaternion rotation = GetCurrentRotation();
