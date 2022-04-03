@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e351566b8573894409265843120ac26f, type: 3}
-  m_Name: stone ore tile
+  m_Name: Ice
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: 21300000, guid: 4340016d0d229754f98412a111f463d7, type: 3}
-  m_Color: {r: 0.60784316, g: 0.73333335, b: 0.7490196, a: 1}
+  m_Color: {r: 0.54901963, g: 0.7411765, b: 0.7490196, a: 1}
   m_Transform:
     e00: 1
     e01: 0
@@ -34,10 +34,8 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 1
-  overrideMaterial: {fileID: 0}
+  overrideMaterial: {fileID: 2100000, guid: 96a7634b8fb472045bb45ae5650d4f3f, type: 2}
   blocksBuildings: 1
   blocksPlayer: 0
-  allowedBuildingTypes:
-  - {fileID: 9183192987088687652, guid: 0bd4e6261a42aeb48aabbfa4d4c05920, type: 3}
-  tilePrefab: {fileID: 1758037796376737950, guid: 4de103e54e597b0489bc17bbd838a30d,
-    type: 3}
+  allowedBuildingTypes: []
+  tilePrefab: {fileID: 0}

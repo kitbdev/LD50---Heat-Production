@@ -5,6 +5,7 @@ using UnityEngine;
 public class TileType : UnityEngine.Tilemaps.Tile {
 
     [Space]
+    // public string displayName;
     // public bool overrideBaseColor = false;
     public Material overrideMaterial;
     public bool blocksBuildings = true;
@@ -14,10 +15,22 @@ public class TileType : UnityEngine.Tilemaps.Tile {
     // public Color color;
     public GameObject tilePrefab;// additional to existing prefab
 
-//     private void OnDrawGizmos() {
-// #if UNITY_EDITOR
-//         UnityEditor.Handles.Label(Vector3.zero, name);
-// #endif
-//     }
+    public ItemType produces;
+    public TileType changeToTypeOnClick;
 
+    public virtual void OnClick(Tile tile) {
+        // nothing
+
+        // make item
+        if (produces != null) {
+            Inventory playerInventory = GameManager.Instance.playerInventory;
+            if (playerInventory.HasSpaceFor(produces)) {
+                playerInventory.AddItem(produces);
+            }
+        }
+        if (changeToTypeOnClick != null) {
+            // todo anim?
+            tile.ChangeGroundTile(changeToTypeOnClick);
+        }
+    }
 }

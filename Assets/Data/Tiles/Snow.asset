@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e351566b8573894409265843120ac26f, type: 3}
-  m_Name: tree tile
+  m_Name: Snow
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: 21300000, guid: 4340016d0d229754f98412a111f463d7, type: 3}
-  m_Color: {r: 0.7490196, g: 0.62352943, b: 0.50980395, a: 1}
+  m_Color: {r: 0.7730687, g: 0.8712238, b: 0.8773585, a: 1}
   m_Transform:
     e00: 1
     e01: 0
@@ -34,9 +34,8 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 1
-  overrideBaseColor: 0
-  blocksBuildings: 1
+  overrideMaterial: {fileID: 2100000, guid: 1e000d6530565164d845d38242061996, type: 2}
+  blocksBuildings: 0
   blocksPlayer: 0
   allowedBuildingTypes: []
-  tilePrefab: {fileID: 268999965477160213, guid: 16bc3b0a89003174db6a1c45da58b606,
-    type: 3}
+  tilePrefab: {fileID: 0}

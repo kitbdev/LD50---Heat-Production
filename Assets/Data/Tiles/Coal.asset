@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e351566b8573894409265843120ac26f, type: 3}
-  m_Name: GrassTile
+  m_Name: Coal
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: 21300000, guid: 4340016d0d229754f98412a111f463d7, type: 3}
-  m_Color: {r: 0.5254902, g: 0.7490196, b: 0.47843137, a: 1}
+  m_Color: {r: 0.7490196, g: 0.5058824, b: 0.29411766, a: 1}
   m_Transform:
     e00: 1
     e01: 0
@@ -34,8 +34,11 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 1
-  overrideBaseColor: 0
-  blocksBuildings: 0
+  overrideMaterial: {fileID: 0}
+  blocksBuildings: 1
   blocksPlayer: 0
-  allowedBuildingTypes: []
-  tilePrefab: {fileID: 0}
+  allowedBuildingTypes:
+  - {fileID: 9183192987088687652, guid: 0bd4e6261a42aeb48aabbfa4d4c05920, type: 3}
+  tilePrefab: {fileID: 1758037796376737950, guid: 9fa554da1769ce147a5d283ef770be76,
+    type: 3}
+  produces: {fileID: 11400000, guid: 09847e0d1c72e774c8bf83f3251e4352, type: 2}

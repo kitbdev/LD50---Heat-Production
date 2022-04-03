@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 356d8b2a388ebc84681dacb53a112c95, type: 3}
   m_Name: WoodStick
   m_EditorClassIdentifier: 
-  itemMaxStack: 1
+  itemMaxStack: 99
   sortOrder: 0

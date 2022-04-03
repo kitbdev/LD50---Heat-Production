@@ -11,6 +11,8 @@ public class BuildInterface : MonoBehaviour {
     [SerializeField] GameObject buildingToggleBtnPrefab;
     [SerializeField] UnityEngine.UI.ToggleGroup buildingToggleGroup;
     [SerializeField] BuildingScreen buildingScreen;
+    [SerializeField] float tileClickDelay = 0.1f;
+    float tileClickedLastTime = 0;
 
     [SerializeField] Color selectedColor;
     [SerializeField] Color validGhostColor;
@@ -91,12 +93,21 @@ public class BuildInterface : MonoBehaviour {
                 }
             } else {
                 // show building screen, if available
-                if (cursorOverTile != null && cursorOverTile.HasBuilding) {
-                    if (cursorOverTile.building.HasBuildingScreen) {
-                        // show it
-                        buildingScreen.SetShown(true);
-                        buildingScreen.building = cursorOverTile.building;
-                        buildingScreen.UpdateUI();
+                if (cursorOverTile != null) {
+                    if (cursorOverTile.HasBuilding) {
+                        if (cursorOverTile.building.HasBuildingScreen) {
+                            // show it
+                            buildingScreen.SetShown(true);
+                            buildingScreen.building = cursorOverTile.building;
+                            buildingScreen.UpdateUI();
+                        }
+                    } else {
+                        // Debug.Log("tileclick0");
+                        if (Time.time >= tileClickedLastTime + tileClickDelay) {
+                            // Debug.Log("tileclick1");
+                            cursorOverTile.groundTileType.OnClick(cursorOverTile);
+                            tileClickedLastTime = Time.time;
+                        }
                     }
                 }
             }

@@ -41,42 +41,69 @@ public class WorldManager : Singleton<WorldManager> {
         List<Tile> tilelist = new List<Tile>();
         for (int y = 0; y < bounds.height; y++) {
             for (int x = 0; x < bounds.width; x++) {
-                Vector3Int sourcePos = new Vector3Int(x, y) + (Vector3Int)bounds.min;
-                GameObject ntile = Instantiate(tilePrefab, transform);
-                ntile.hideFlags = hideTiles ? HideFlags.HideAndDontSave : HideFlags.DontSave;
+                Vector2Int tilePos = new Vector2Int(x, y) + bounds.min;
+                Vector3Int sourcePos = new Vector3Int(tilePos.x, tilePos.y);
                 if (!sourceMap.HasTile(sourcePos)) {
                     Debug.LogWarning("no tile for " + sourcePos);
                     continue;
                 }
-                var tileb = sourceMap.GetTile<TileType>(sourcePos);
-                if (tileb == null) {
+                var tileType = sourceMap.GetTile<TileType>(sourcePos);
+                if (tileType == null) {
                     Debug.LogWarning("invalid tile for " + sourcePos);
                     break;
                 }
-                if (tileb.tilePrefab != null) {
-                    GameObject tileTop = Instantiate(tileb.tilePrefab, ntile.transform);
-                    tileTop.transform.localPosition = Vector3.zero;
-                    tileTop.hideFlags = hideTiles ? HideFlags.HideAndDontSave : HideFlags.DontSave;
-                }
-                if (tileb.overrideMaterial != null) {
-                    ntile.GetComponentInChildren<Renderer>().sharedMaterial = tileb.overrideMaterial;
-                }
-
-                Vector2Int tilePos = new Vector2Int(x, y) + bounds.min;
-                ntile.name = "Tile " + tilePos;
-                ntile.transform.position = TilePosToWorldPos(tilePos);
-                Tile tile = ntile.GetComponent<Tile>();
-                tile.Init(new Tile.TileInitArgs() {
-                    mapPos = tilePos,
-                    hasTileCollision = tileb.blocksPlayer,
-                    tileType = tileb,
-                });
+                Tile tile = MakeTile(tilePos, tileType);
                 tilelist.Add(tile);
             }
         }
         tiles = tilelist.ToArray();
     }
 
+    private Tile MakeTile(Vector2Int tilePos, TileType tileType) {
+        GameObject ntile = Instantiate(tilePrefab, transform);
+        ntile.hideFlags = hideTiles ? HideFlags.HideAndDontSave : HideFlags.DontSave;
+        if (tileType.tilePrefab != null) {
+            GameObject tileTop = Instantiate(tileType.tilePrefab, ntile.transform);
+            tileTop.transform.localPosition = Vector3.zero;
+            tileTop.hideFlags = hideTiles ? HideFlags.HideAndDontSave : HideFlags.DontSave;
+        }
+        if (tileType.overrideMaterial != null) {
+            ntile.GetComponentInChildren<Renderer>().sharedMaterial = tileType.overrideMaterial;
+        }
+
+        ntile.name = "Tile " + tilePos;
+        ntile.transform.position = TilePosToWorldPos(tilePos);
+        Tile tile = ntile.GetComponent<Tile>();
+        tile.Init(new Tile.TileInitArgs() {
+            mapPos = tilePos,
+            hasTileCollision = tileType.blocksPlayer,
+            tileType = tileType,
+        });
+        return tile;
+    }
+    public void UpdateTileType(Vector2Int tilePos, TileType tileType) {
+        Tile tile = GetTileAt(tilePos);
+        if (tile == null) {
+            Debug.LogWarning("Invalid tilepos " + tilePos);
+            return;
+        }
+        // todo dont just delete and remake
+        // or at least save some data
+        var b = tile.building;
+        if (b != null) {
+            tile.RemoveBuilding();
+        }
+        Destroy(tile.gameObject);
+        if (tileType == null) {
+            return;
+        }
+        Tile ntile = MakeTile(tilePos, tileType);
+        if (b != null) {
+            ntile.PlaceBuilding(b);
+            b.tile = ntile;
+        }
+
+    }
 
     public Vector2Int WorldPosToTilePos(Vector3 worldPos) {
         Vector3 pos = transform.InverseTransformPoint(worldPos);

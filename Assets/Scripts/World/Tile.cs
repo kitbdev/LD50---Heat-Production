@@ -33,11 +33,11 @@ public class Tile : MonoBehaviour {
     public void Init(TileInitArgs args) {
         mapPos = args.mapPos;
         GetComponent<Collider>().enabled = args.hasTileCollision;
-        SetGroundTile(args.tileType);
+        _groundTileType = args.tileType;
     }
-    public void SetGroundTile(TileType tileType) {
-        _groundTileType = tileType;
-        // todo fix go
+    public void ChangeGroundTile(TileType tileType) {
+        // we'll get remade
+        WorldManager.Instance.UpdateTileType(mapPos, tileType);
     }
     public bool CanPlaceBuilding(Building buildingType) {
         if (HasBuilding) return false;
@@ -72,4 +72,5 @@ public class Tile : MonoBehaviour {
             DestroyImmediate(building.gameObject);
         }
     }
+
 }
