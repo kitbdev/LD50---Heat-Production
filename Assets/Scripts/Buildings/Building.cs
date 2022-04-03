@@ -46,7 +46,10 @@ public class Building : MonoBehaviour {
     }
 
     private void OnValidate() {
-        SetLabelName();
+        if (!Application.isPlaying) {
+            // for prefabs
+            SetLabelName();
+        }
     }
     protected virtual void Awake() {
         // NewMethod();

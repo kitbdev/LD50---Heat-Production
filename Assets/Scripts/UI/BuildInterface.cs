@@ -16,24 +16,31 @@ public class BuildInterface : MonoBehaviour {
     [SerializeField] Color invalidGhostColor;
 
     [Header("Placing")]
+    [SerializeField] bool requireResources = true;
     [Layer][SerializeField] int previewLayer;
     [SerializeField] Transform cursorT;
     [SerializeField] TMPro.TMP_Text cursorText;
     [SerializeField] int ghostSmoothingPos = 20;
     [SerializeField] int ghostSmoothingRot = 40;
     // [Space]
-    [SerializeField, ReadOnly] bool isBuilding = false;
     [SerializeField, ReadOnly] bool isPlacing;
-    [SerializeField, ReadOnly] int curRotation;
-    [SerializeField, ReadOnly] Vector3 cursorPos = Vector3.zero;
-    [SerializeField, ReadOnly] Tile cursorOverTile;
-    [SerializeField, ReadOnly] bool keepPlacingHold = false;
-    [SerializeField, ReadOnly] bool keepPlacingToggle = false;
-    int defLayer;
-
     [SerializeField, ReadOnly] GameObject placingGhost;
     [SerializeField, ReadOnly] Building placingGhostBuilding;
     [SerializeField, ReadOnly] Building placingType;
+    [SerializeField, ReadOnly] int curRotation;
+    [SerializeField, ReadOnly] bool keepPlacingHold = false;
+    [SerializeField, ReadOnly] bool keepPlacingToggle = false;
+
+    [Space]
+    [SerializeField, ReadOnly] bool isBuilding = false;
+    [SerializeField, ReadOnly] Vector3 cursorPos = Vector3.zero;
+    [SerializeField, ReadOnly] Tile cursorOverTile;
+    int defLayer;
+
+
+    Vector3 cursorDragCheckPos = Vector3.zero;
+    bool dragHeld = false;
+    float dragCursorThreshold = 0.1f;
 
     // for deletion
     [SerializeField, ReadOnly] Building selectedBuilding;
@@ -45,6 +52,9 @@ public class BuildInterface : MonoBehaviour {
     private void Awake() {
         cam ??= Camera.main;
         SetUpUI();
+        if (cursorText) {
+            cursorText.transform.parent.gameObject.SetActive(false);
+        }
     }
     private void OnEnable() {
         controls = new Controls();
@@ -58,22 +68,31 @@ public class BuildInterface : MonoBehaviour {
         };
         controls.Player.PlaceBuilding.Enable();
         controls.Player.PlaceBuilding.performed += c => {
-            if (isPlacing) {
-                FinishPlacing();
-            } else {
-                // select building
-                if (cursorOverTile != null && cursorOverTile.HasBuilding) {
-                    DeselectBuilding();
-                    selectedBuilding = cursorOverTile.building;
-                    selectedBuilding.quickOutline.enabled = true;
-                    selectedBuilding.quickOutline.OutlineColor = selectedColor;
-                    // todo show more info
-                    // todo start dragging?
-                    // convert building to ghost and place it
+            if (isBuilding) {
+                if (isPlacing) {
+                    FinishPlacing();
                 } else {
-                    // deselect
-                    DeselectBuilding();
+                    // select building
+                    if (cursorOverTile != null && cursorOverTile.HasBuilding) {
+                        DeselectBuilding();
+                        selectedBuilding = cursorOverTile.building;
+                        selectedBuilding.quickOutline.enabled = true;
+                        selectedBuilding.quickOutline.OutlineColor = selectedColor;
+                        // todo show more info
+                        cursorDragCheckPos = cursorPos;
+                        dragHeld = true;
+                    } else {
+                        // deselect
+                        DeselectBuilding();
+                    }
                 }
+            }
+        };
+        controls.Player.PlaceBuilding.canceled += c => {
+            dragHeld = false;
+            // drag release finish placing
+            if (isBuilding && isPlacing) {
+                FinishPlacing();
             }
         };
         controls.Player.RemoveBuilding.Enable();
@@ -147,14 +166,26 @@ public class BuildInterface : MonoBehaviour {
             if (cursorText != null) {
                 if (cursorOverTile != null) {
                     cursorText.text = cursorOverTile.groundTileType.name;
+                    cursorText.transform.parent.gameObject.SetActive(true);
                     // todo show other info ?
                 } else {
                     cursorText.text = "";
+                    cursorText.transform.parent.gameObject.SetActive(false);
                 }
             }
 
             if (isPlacing) {
                 UpdatePlacing();
+            } else {
+                if (dragHeld) {
+                    if (selectedBuilding != null) {
+                        if (Vector3.Distance(cursorPos, cursorDragCheckPos) > dragCursorThreshold) {
+                            // start dragging
+                            // convert building to ghost and place it
+                            StartPlacingFromSelection();
+                        }
+                    }
+                }
             }
         }
     }
@@ -197,6 +228,10 @@ public class BuildInterface : MonoBehaviour {
 
     void RemoveBuilding() {
         if (!isBuilding) return;
+        if (isPlacing) {
+            CancelPlacing();
+            return;
+        }
         if (selectedBuilding != null) {
             selectedBuilding.tile.RemoveBuilding();
         }
@@ -205,6 +240,7 @@ public class BuildInterface : MonoBehaviour {
         if (!isBuilding) return;
         if (cursorOverTile != null && cursorOverTile.HasBuilding) {
             placingType = BuildingManager.Instance.GetBuildingTypeForBuilding(cursorOverTile.building);
+            curRotation = GetRotInt(cursorOverTile.building.transform.rotation);
             StartPlacing();
         }
     }
@@ -212,30 +248,47 @@ public class BuildInterface : MonoBehaviour {
     public void StartPlacingBuilding(Building buildingType) {
         if (!isBuilding) return;
         // Debug.Log("StartPlacingBuilding " + (buildingType?.name ?? "none"));
-        this.placingType = buildingType;
-        if (placingType != null) {
+        if (isPlacing) {
+            CancelPlacing();
+        }
+        if (buildingType != null) {
+            this.placingType = buildingType;
             StartPlacing();
         } else {
-            if (isPlacing) {
-                CancelPlacing();
-            }
+            // this.placingType = null;
         }
     }
+    void StartPlacingFromSelection() {
+        isPlacing = true;
+        curRotation = GetRotInt(selectedBuilding.transform.rotation);
+        placingGhost = selectedBuilding.gameObject;
+        placingGhostBuilding = selectedBuilding;
+        placingGhost.layer = previewLayer;
+        DeselectBuilding();
+        placingGhostBuilding.tile.building = null;
+        placingGhostBuilding.OnRemoved();
+        placingGhostBuilding.quickOutline.enabled = true;
+        // dont need resources here
+    }
     void StartPlacing() {
+        if (requireResources) {
+            bool canBuild = GameManager.Instance.playerInventory.HasItems(placingType.buildingRecipe.requiredItems);
+            if (!canBuild) return;
+            GameManager.Instance.playerInventory.TakeItems(placingType.buildingRecipe.requiredItems);
+        }
         DeselectBuilding();
         isPlacing = true;
         placingGhost = Instantiate(BuildingManager.Instance.GetPrefabForBuildingType(placingType), transform);
-        // todo disable physics and logic
-        // todo make transp
         placingGhost.transform.position = cursorPos;
         defLayer = placingGhost.layer;
         placingGhost.layer = previewLayer;
         placingGhostBuilding = placingGhost.GetComponent<Building>();
         placingGhostBuilding.quickOutline.enabled = true;
+        //? disable physics and logic
+        // should be disabled by default
     }
     void FinishPlacing() {
-        Debug.Log("Finish placing");
-        isPlacing = false;
+        // Debug.Log("Finish placing");
         Vector3 targetPos = cursorPos;
         // snap to world grid
         Tile tile = WorldManager.Instance.GetTileAt(targetPos);
@@ -247,12 +300,14 @@ public class BuildInterface : MonoBehaviour {
             placingGhost.layer = defLayer;
             tile.PlaceBuilding(placingGhostBuilding);
             placingGhostBuilding.quickOutline.enabled = false;
+            placingGhost = null;
         } else {
             // invalid
             // ? or just ignore click?
             CancelPlacing();
+            return;// dont try to keep placing
         }
-        placingGhost = null;
+        isPlacing = false;
         if (keepPlacingHold || keepPlacingToggle) {
             StartPlacing();
         } else {
@@ -262,8 +317,23 @@ public class BuildInterface : MonoBehaviour {
         }
     }
     void CancelPlacing() {
+        bool wasntplacing = !isPlacing;
+        if (wasntplacing) return;
         isPlacing = false;
-        buildingToggleGroup.SetAllTogglesOff();
+        buildingToggleGroup.SetAllTogglesOff();// ! this would call self if no isplacing check before
+        if (requireResources) {
+            // refund
+            if (placingType == null) {
+                Debug.LogWarning("Cancellng placing with a null placing type!");
+                placingType = BuildingManager.Instance.GetBuildingTypeForBuilding(placingGhostBuilding);
+            }
+            if (GameManager.Instance.playerInventory.HasSpaceFor(placingType.buildingRecipe.requiredItems)) {
+                GameManager.Instance.playerInventory.AddItems(placingType.buildingRecipe.requiredItems);
+            }
+        }
+        // todo add what we can and drop the rest?
+        // ItemManager.Instance.DropItem()
+        // Debug.Log("Cancel placing");
         Destroy(placingGhost.gameObject);
         placingGhost = null;
         placingGhostBuilding = null;
@@ -276,9 +346,8 @@ public class BuildInterface : MonoBehaviour {
                 targetPos = cursorOverTile.transform.position;
                 placingGhostBuilding.quickOutline.OutlineColor = validGhostColor;
             } else {
-                placingGhostBuilding.quickOutline.OutlineColor = invalidGhostColor;
                 // invalid
-                // todo set color validity
+                placingGhostBuilding.quickOutline.OutlineColor = invalidGhostColor;
             }
         }
         Quaternion rotation = GetCurrentRotation();
@@ -294,5 +363,11 @@ public class BuildInterface : MonoBehaviour {
 
     private Quaternion GetCurrentRotation() {
         return Quaternion.Euler(0, curRotation * 90f, 0);
+    }
+    private int GetRotInt(Quaternion rot) {
+        int turn = Mathf.RoundToInt(rot.eulerAngles.y / 90f);
+        while (turn > 3) turn -= 4;
+        while (turn < 0) turn += 4;
+        return turn;
     }
 }

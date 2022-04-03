@@ -38,10 +38,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5384433749805967168, guid: 1ee6a79d9f64a634da59d3867ca00d19,
+    - target: {fileID: 4840450745662327553, guid: 1ee6a79d9f64a634da59d3867ca00d19,
         type: 3}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384433749805967168, guid: 1ee6a79d9f64a634da59d3867ca00d19,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5384433749805967175, guid: 1ee6a79d9f64a634da59d3867ca00d19,
         type: 3}
@@ -124,7 +129,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 1726604825209832589}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6723724740472561653}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
@@ -141,6 +146,28 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1726604825209832589}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9183192987088687652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6723724740472561653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 611093c3e55e84e4882d1040d24a8075, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  typeIndex: 0
+  localOccupiedSpaces: []
+  buildingRecipe:
+    requiredItems: []
+  labelName: {fileID: 6723724741889532874}
+  quickOutline: {fileID: 4342184347737250790}
+  isPlaced: 0
+  tile: {fileID: 0}
+  productionItem: {fileID: 11400000, guid: 97d7f5ab7e72a794586144dfee792daf, type: 2}
+  productionRate: 1
 --- !u!114 &415990552402498666
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,28 +209,6 @@ MonoBehaviour:
   onTimerComplete:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &9183192987088687652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6723724740472561653}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 611093c3e55e84e4882d1040d24a8075, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  typeIndex: 0
-  localOccupiedSpaces: []
-  buildingRecipe:
-    requiredItems: []
-  labelName: {fileID: 6723724741889532874}
-  quickOutline: {fileID: 4342184347737250790}
-  isPlaced: 0
-  tile: {fileID: 0}
-  productionItem: {fileID: 11400000, guid: 97d7f5ab7e72a794586144dfee792daf, type: 2}
-  productionRate: 1
 --- !u!114 &6723724741889532874 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5384433749805967175, guid: 1ee6a79d9f64a634da59d3867ca00d19,
