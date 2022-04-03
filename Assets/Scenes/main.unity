@@ -45325,8 +45325,8 @@ CharacterController:
   serializedVersion: 2
   m_Height: 2
   m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_SlopeLimit: 0
+  m_StepOffset: 0
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
@@ -62394,6 +62394,7 @@ MonoBehaviour:
   isBuilding: 0
   cursorPos: {x: 0, y: 0, z: 0}
   cursorOverTile: {fileID: 0}
+  hoverBuilding: {fileID: 0}
   selectedBuilding: {fileID: 0}
   cam: {fileID: 330585545}
 --- !u!4 &2038407387
@@ -65509,17 +65510,17 @@ PrefabInstance:
     - target: {fileID: 2278241591009704411, guid: 6669653f74fd1244dbe21d152211c73e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.738302
+      value: -3.36
       objectReference: {fileID: 0}
     - target: {fileID: 2278241591009704411, guid: 6669653f74fd1244dbe21d152211c73e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.7635918
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2278241591009704411, guid: 6669653f74fd1244dbe21d152211c73e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.5104544
+      value: -9.87
       objectReference: {fileID: 0}
     - target: {fileID: 2278241591009704411, guid: 6669653f74fd1244dbe21d152211c73e,
         type: 3}

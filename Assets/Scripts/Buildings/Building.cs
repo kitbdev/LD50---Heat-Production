@@ -63,6 +63,7 @@ public class Building : MonoBehaviour {
         if (IsPlaced) {
             OnPlaced();
         }
+        OnUnHover();
     }
     protected virtual void OnDisable() {
         // for hot reloading 
@@ -79,6 +80,13 @@ public class Building : MonoBehaviour {
     }
     public virtual void OnRemoved() {
         IsPlaced = false;
+    }
+
+    public void OnHover() {
+        labelName.transform.parent.gameObject.SetActive(true);
+    }
+    public void OnUnHover() {
+        labelName.transform.parent.gameObject.SetActive(false);
     }
 
 }

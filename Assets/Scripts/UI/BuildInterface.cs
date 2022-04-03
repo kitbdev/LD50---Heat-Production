@@ -42,6 +42,7 @@ public class BuildInterface : MonoBehaviour {
     bool dragHeld = false;
     float dragCursorThreshold = 0.1f;
 
+    [SerializeField, ReadOnly] Building hoverBuilding = null;
     // for deletion
     [SerializeField, ReadOnly] Building selectedBuilding;
 
@@ -150,8 +151,14 @@ public class BuildInterface : MonoBehaviour {
         }
 
         cursorOverTile = WorldManager.Instance.GetTileAt(cursorPos);
-        // todo also when not building?
-        // get building info
+        // hover
+        if (cursorOverTile != null && cursorOverTile.HasBuilding) {
+            SetHoverBuilding(cursorOverTile.building);
+        } else {
+            SetHoverBuilding(null);
+        }
+
+        // cursor
         if (cursorT != null) {
             if (cursorOverTile != null) {
                 cursorT.gameObject.SetActive(true);
@@ -189,6 +196,18 @@ public class BuildInterface : MonoBehaviour {
             }
         }
     }
+
+    private void SetHoverBuilding(Building selbuilding) {
+        if (hoverBuilding != null) {
+            hoverBuilding.OnUnHover();
+        }
+        hoverBuilding = selbuilding;
+        if (hoverBuilding != null) {
+            // Debug.Log("Hove");
+            hoverBuilding.OnHover();
+        }
+    }
+
     void ClearUIBtns() {
         for (int i = buildingButtonHolder.childCount - 1; i >= 0; i--) {
             if (Application.isPlaying) {

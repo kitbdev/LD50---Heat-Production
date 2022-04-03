@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: IronOreTile
   m_EditorClassIdentifier: 
   blocksBuildings: 1
-  allowedBuildingTypes: []
-  color: {r: 0.29411766, g: 0.73333335, b: 0.7490196, a: 1}
-  tilePrefab: {fileID: 0}
+  allowedBuildingTypes:
+  - {fileID: 9183192987088687652, guid: 0bd4e6261a42aeb48aabbfa4d4c05920, type: 3}
+  color: {r: 0.7490196, g: 0.60784316, b: 0.48235294, a: 1}
+  tilePrefab: {fileID: 8612002778542423528, guid: 4af1620e88175a747be6145feae775df,
+    type: 3}
