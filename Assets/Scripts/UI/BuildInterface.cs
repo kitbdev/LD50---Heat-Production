@@ -97,7 +97,7 @@ public class BuildInterface : MonoBehaviour {
             }
         };
         controls.Player.RemoveBuilding.Enable();
-        controls.Player.RemoveBuilding.performed += c => { RemoveBuilding(); };
+        controls.Player.RemoveBuilding.performed += c => { DeleteBuilding(); };
         controls.Player.RotateBuilding.Enable();
         controls.Player.RotateBuilding.performed += c => {
             curRotation += c.ReadValue<float>() > 0 ? 1 : -1;
@@ -245,14 +245,14 @@ public class BuildInterface : MonoBehaviour {
         }
     }
 
-    void RemoveBuilding() {
+    void DeleteBuilding() {
         if (!isBuilding) return;
         if (isPlacing) {
             CancelPlacing();
             return;
         }
         if (selectedBuilding != null) {
-            selectedBuilding.tile.RemoveBuilding();
+            selectedBuilding.tile.DeleteBuilding();
         }
     }
     void EyeDropperSample() {
@@ -284,8 +284,7 @@ public class BuildInterface : MonoBehaviour {
         placingGhostBuilding = selectedBuilding;
         placingGhost.layer = previewLayer;
         DeselectBuilding();
-        placingGhostBuilding.tile.building = null;
-        placingGhostBuilding.OnRemoved();
+        placingGhostBuilding.tile.RemoveBuilding();
         placingGhostBuilding.quickOutline.enabled = true;
         // dont need resources here
     }

@@ -108,6 +108,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4692223557860883238}
   - component: {fileID: 4692223557860883237}
+  - component: {fileID: 898067215723293935}
   m_Layer: 0
   m_Name: Tile
   m_TagString: Untagged
@@ -147,3 +148,16 @@ MonoBehaviour:
   _groundTileType: {fileID: 11400000, guid: 484df148acdb6b6448caccd5645f7c5e, type: 2}
   groundTile: {fileID: 0}
   building: {fileID: 0}
+--- !u!65 &898067215723293935
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4692223557860883239}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0.5, z: 0}

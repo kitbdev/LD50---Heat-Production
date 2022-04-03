@@ -12,7 +12,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e351566b8573894409265843120ac26f, type: 3}
   m_Name: GrassTile
   m_EditorClassIdentifier: 
+  m_Sprite: {fileID: 21300000, guid: 4340016d0d229754f98412a111f463d7, type: 3}
+  m_Color: {r: 0.5254902, g: 0.7490196, b: 0.47843137, a: 1}
+  m_Transform:
+    e00: 1
+    e01: 0
+    e02: 0
+    e03: 0
+    e10: 0
+    e11: 1
+    e12: 0
+    e13: 0
+    e20: 0
+    e21: 0
+    e22: 1
+    e23: 0
+    e30: 0
+    e31: 0
+    e32: 0
+    e33: 1
+  m_InstancedGameObject: {fileID: 0}
+  m_Flags: 1
+  m_ColliderType: 1
+  overrideBaseColor: 0
   blocksBuildings: 0
+  blocksPlayer: 0
   allowedBuildingTypes: []
-  color: {r: 0, g: 0, b: 0, a: 0}
   tilePrefab: {fileID: 0}

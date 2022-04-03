@@ -6,19 +6,34 @@ using UnityEngine;
 [SelectionBase]
 public class Tile : MonoBehaviour {
 
-    public Vector2Int mapPos = Vector2Int.zero;
-
-    [SerializeField]
+    [SerializeField, ReadOnly]
+    private Vector2Int _mapPos = Vector2Int.zero;
+    [SerializeField, ReadOnly]
     private TileType _groundTileType;
-    public GameObject groundTile;
-    public Building building;
+    [SerializeField, ReadOnly]
+    private Building _building;
+
+    // public GameObject topTile;
 
     public bool HasBuilding => building != null;
 
     public TileType groundTileType { get => _groundTileType; protected set => _groundTileType = value; }
+    public Vector2Int mapPos { get => _mapPos; protected set => _mapPos = value; }
+    public Building building { get => _building; protected set => _building = value; }
 
     private void Awake() {
 
+    }
+    [System.Serializable]
+    public struct TileInitArgs {
+        public TileType tileType;
+        public bool hasTileCollision;
+        public Vector2Int mapPos;
+    }
+    public void Init(TileInitArgs args) {
+        mapPos = args.mapPos;
+        GetComponent<Collider>().enabled = args.hasTileCollision;
+        SetGroundTile(args.tileType);
     }
     public void SetGroundTile(TileType tileType) {
         _groundTileType = tileType;
@@ -37,10 +52,14 @@ public class Tile : MonoBehaviour {
         building.tile = this;
         building.OnPlaced();
     }
-    public void RemoveBuilding() {// seperate from dest?
+    public void RemoveBuilding() {
         if (!HasBuilding) return;
         building.OnRemoved();
         building.tile = null;
+    }
+    public void DeleteBuilding() {
+        if (!HasBuilding) return;
+        RemoveBuilding();
         if (Application.isPlaying) {
             Destroy(building.gameObject);
         } else {
