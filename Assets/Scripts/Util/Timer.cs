@@ -52,6 +52,10 @@ public class Timer : MonoBehaviour {
     }
     public void StopTimer() {
         isRunning = false;
+        timer = 0;
+    }
+    public void PauseTimer() {
+        isRunning = false;
     }
     // doesnt reset timer
     public void ResumeTimer() {

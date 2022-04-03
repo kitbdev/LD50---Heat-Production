@@ -17,23 +17,11 @@ public class BuildingManager : Singleton<BuildingManager> {
     }
 
     [ContextMenu("Find Types")]
-    void AutoFindAllNodeTypePrefabs() {
-#if UNITY_EDITOR
-        // Find all Gameobjects that have 'co' in their filename, that are labelled with 'architecture' and are placed in 'MyAwesomeProps' folder
-        const string folder = "Assets/Prefabs/Buildings";
-        string[] guids2 = UnityEditor.AssetDatabase.FindAssets("", new[] { folder });
-        List<GameObject> loadAssets = new List<GameObject>();
-        foreach (string guid2 in guids2) {
-            string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid2);
-            // Debug.Log("Loading " + path);
-            loadAssets.Add(UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path));
-        }
-        buildingPrefabs = loadAssets.Where(p => p != null).ToArray();
+    void FindPrefabs() {
+        buildingPrefabs = AssetHelper.AutoFindAllAssets<GameObject>("Assets/Prefabs/Buildings");
         for (int i = 0; i < buildingPrefabs.Length; i++) {
             GameObject buildingPrefab = buildingPrefabs[i];
             buildingPrefab.GetComponent<Building>().typeIndex = i;
         }
-#endif
     }
-
 }

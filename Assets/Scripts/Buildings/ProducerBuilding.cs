@@ -11,7 +11,7 @@ public class ProducerBuilding : Building, IHoldsItem {
     Timer processTimer;
     Inventory inventory;
 
-    public Inventory Inventory => inventory;
+    public Inventory FromInventory => inventory;
 
     protected override void Awake() {
         processTimer = GetComponent<Timer>();

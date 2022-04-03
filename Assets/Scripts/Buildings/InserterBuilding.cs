@@ -22,12 +22,19 @@ public class InserterBuilding : Building {
         }
         return null;
     }
+    private IAccecptsItem GetAcceptsItem(Vector2Int localPos) {
+        Building building = WorldManager.Instance.GetTileAt(LocalRelPosToTilePos(localPos))?.building;
+        if (building is IAccecptsItem accItem) {
+            return accItem;
+        }
+        return null;
+    }
 
     public IHoldsItem GetFromBuilding() {
         return GetHoldsItem(fromBuildingLPos);
     }
-    public IHoldsItem GetToBuilding() {
-        return GetHoldsItem(toBuildingLPos);
+    public IAccecptsItem GetToBuilding() {
+        return GetAcceptsItem(toBuildingLPos);
     }
 
 
@@ -50,9 +57,9 @@ public class InserterBuilding : Building {
         // Debug.Log("try grab " + fromBuildingLPos + " " + LocalRelPosToTilePos(fromBuildingLPos));
         IHoldsItem frombuilding = GetFromBuilding();
         if (frombuilding != null) {
-            if (frombuilding.Inventory.HasAnyItems()) {
+            if (frombuilding.FromInventory.HasAnyItems()) {
                 // todo optional filter
-                Item item = frombuilding.Inventory.TakeFirstItem();
+                Item item = frombuilding.FromInventory.TakeFirstItem();
                 heldItem = ItemManager.Instance.DropItem(item);
                 heldItem.transform.parent = grabber;
                 heldItem.transform.position = Vector3.zero;
@@ -64,11 +71,11 @@ public class InserterBuilding : Building {
     }
     void FinishMovingItem() {
         if (heldItem == null) return;
-        IHoldsItem tobuilding = GetToBuilding();
+        IAccecptsItem tobuilding = GetToBuilding();
         if (tobuilding != null) {
-            if (tobuilding.Inventory.HasSpaceFor(heldItem.item.itemType)) {
+            if (tobuilding.ToInventory.HasSpaceFor(heldItem.item.itemType)) {
                 // Debug.Log("Placed");
-                tobuilding.Inventory.AddItem(heldItem.item);
+                tobuilding.ToInventory.AddItem(heldItem.item);
                 Destroy(heldItem.gameObject);
                 heldItem = null;
             }

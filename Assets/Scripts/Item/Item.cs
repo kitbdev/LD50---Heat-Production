@@ -11,19 +11,13 @@ public class Item {
 }
 [System.Serializable]
 public class ItemStack {
-    public Item item;
+    public ItemType itemType;
     public int count;
-    public bool IsFull => item != null && count >= item.itemType.itemMaxStack;
-    public bool IsEmpty => item == null || count == 0;
-    public bool HasItem => item != null;
-    public int RemainingSpace => item == null ? 0 : item.itemType.itemMaxStack - count;
+    public bool IsFull => itemType != null && count >= itemType.itemMaxStack;
+    public bool IsEmpty => itemType == null || count == 0;
+    public bool HasItem => itemType != null;
+    public int RemainingSpace => itemType == null ? 0 : itemType.itemMaxStack - count;
     public override string ToString() {
-        return IsEmpty ? "Empty Stack" : (count + " " + item.itemType.ToString() + "s stack");
+        return IsEmpty ? "Empty Stack" : (count + " " + itemType.ToString() + "s stack");
     }
-}
-[System.Serializable]
-public class ItemRecipe {
-    public ItemStack[] requiredItems;
-    // ? includes liquids?
-    public ItemStack[] producedItems;
 }
