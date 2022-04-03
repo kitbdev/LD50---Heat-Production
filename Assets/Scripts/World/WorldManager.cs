@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 public class WorldManager : Singleton<WorldManager> {
 
     public RectInt bounds;
+    [SerializeField] bool hideTiles = true;
     [SerializeField] float tileSize = 2;
     [SerializeReference] GameObject tilePrefab;
     [SerializeField] Tilemap sourceMap;
@@ -42,7 +43,7 @@ public class WorldManager : Singleton<WorldManager> {
             for (int x = 0; x < bounds.width; x++) {
                 Vector3Int sourcePos = new Vector3Int(x, y) + (Vector3Int)bounds.min;
                 GameObject ntile = Instantiate(tilePrefab, transform);
-                ntile.hideFlags = HideFlags.HideAndDontSave;
+                ntile.hideFlags = hideTiles ? HideFlags.HideAndDontSave : HideFlags.DontSave;
                 if (!sourceMap.HasTile(sourcePos)) {
                     Debug.LogWarning("no tile for " + sourcePos);
                     continue;
@@ -55,7 +56,7 @@ public class WorldManager : Singleton<WorldManager> {
                 if (tileb.tilePrefab != null) {
                     GameObject tileTop = Instantiate(tileb.tilePrefab, ntile.transform);
                     tileTop.transform.localPosition = Vector3.zero;
-                    tileTop.hideFlags = HideFlags.HideAndDontSave;
+                    tileTop.hideFlags = hideTiles ? HideFlags.HideAndDontSave : HideFlags.DontSave;
                 }
                 if (tileb.overrideMaterial != null) {
                     ntile.GetComponentInChildren<Renderer>().sharedMaterial = tileb.overrideMaterial;
@@ -112,12 +113,12 @@ public class WorldManager : Singleton<WorldManager> {
         Vector3 max = TilePosToWorldPos(bounds.max);
         Vector3 upleft = TilePosToWorldPos(bounds.min + bounds.height * Vector2Int.up);
         Vector3 bottomRight = TilePosToWorldPos(bounds.min + bounds.width * Vector2Int.right);
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         UnityEditor.Handles.color = Color.black;
         UnityEditor.Handles.DrawLine(min + offset, upleft + offset, 2);
         UnityEditor.Handles.DrawLine(min + offset, bottomRight + offset, 2);
         UnityEditor.Handles.DrawLine(max + offset, upleft + offset, 2);
         UnityEditor.Handles.DrawLine(max + offset, bottomRight + offset, 2);
-        #endif
+#endif
     }
 }

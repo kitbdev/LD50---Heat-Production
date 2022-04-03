@@ -19,6 +19,7 @@ public class BuildInterface : MonoBehaviour {
     [SerializeField] bool requireResources = true;
     [Layer][SerializeField] int previewLayer;
     [SerializeField] Transform cursorT;
+    [SerializeField] Material cursorMat;
     [SerializeField] TMPro.TMP_Text cursorText;
     [SerializeField] int ghostSmoothingPos = 20;
     [SerializeField] int ghostSmoothingRot = 40;
@@ -239,6 +240,7 @@ public class BuildInterface : MonoBehaviour {
     }
     void FinishBuilding() {
         isBuilding = false;
+        if (cursorMat != null) cursorMat.color = selectedColor;
         buildScreen?.Hide();
         if (isPlacing) {
             CancelPlacing();
@@ -284,6 +286,7 @@ public class BuildInterface : MonoBehaviour {
         placingGhostBuilding = selectedBuilding;
         placingGhost.layer = previewLayer;
         DeselectBuilding();
+        // Debug.Log("Removing " + placingGhostBuilding.tile, placingGhostBuilding.tile);
         placingGhostBuilding.tile.RemoveBuilding();
         placingGhostBuilding.quickOutline.enabled = true;
         // dont need resources here
@@ -329,9 +332,10 @@ public class BuildInterface : MonoBehaviour {
         if (keepPlacingHold || keepPlacingToggle) {
             StartPlacing();
         } else {
-            placingType = null;
+            // placingType = null;
             placingGhostBuilding = null;
             buildingToggleGroup.SetAllTogglesOff();
+            if (cursorMat != null) cursorMat.color = selectedColor;
         }
     }
     void CancelPlacing() {
@@ -355,6 +359,7 @@ public class BuildInterface : MonoBehaviour {
         Destroy(placingGhost.gameObject);
         placingGhost = null;
         placingGhostBuilding = null;
+        if (cursorMat != null) cursorMat.color = selectedColor;
     }
     void UpdatePlacing() {
         Vector3 targetPos = cursorPos;
@@ -362,9 +367,11 @@ public class BuildInterface : MonoBehaviour {
         if (cursorOverTile != null) {
             targetPos = cursorOverTile.transform.position;
             if (cursorOverTile.CanPlaceBuilding(placingType)) {
+                if (cursorMat != null) cursorMat.color = validGhostColor;
                 placingGhostBuilding.quickOutline.OutlineColor = validGhostColor;
             } else {
                 // invalid
+                if (cursorMat != null) cursorMat.color = invalidGhostColor;
                 placingGhostBuilding.quickOutline.OutlineColor = invalidGhostColor;
             }
         }

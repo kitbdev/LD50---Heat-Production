@@ -34,10 +34,10 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 1
-  overrideBaseColor: 0
+  overrideMaterial: {fileID: 0}
   blocksBuildings: 1
   blocksPlayer: 0
   allowedBuildingTypes:
   - {fileID: 9183192987088687652, guid: 0bd4e6261a42aeb48aabbfa4d4c05920, type: 3}
-  tilePrefab: {fileID: 8612002778542423528, guid: 4af1620e88175a747be6145feae775df,
+  tilePrefab: {fileID: 1758037796376737950, guid: 4de103e54e597b0489bc17bbd838a30d,
     type: 3}

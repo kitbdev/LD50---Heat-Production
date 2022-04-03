@@ -57,9 +57,11 @@ public class Tile : MonoBehaviour {
         building.OnPlaced();
     }
     public void RemoveBuilding() {
+        // Debug.Log("Rem " + name + " " + HasBuilding);
         if (!HasBuilding) return;
         building.OnRemoved();
         building.tile = null;
+        building = null;
     }
     public void DeleteBuilding() {
         if (!HasBuilding) return;
