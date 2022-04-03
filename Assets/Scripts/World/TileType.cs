@@ -14,4 +14,10 @@ public class TileType : UnityEngine.Tilemaps.Tile {
     // public Color color;
     public GameObject tilePrefab;// additional to existing prefab
 
+//     private void OnDrawGizmos() {
+// #if UNITY_EDITOR
+//         UnityEditor.Handles.Label(Vector3.zero, name);
+// #endif
+//     }
+
 }

@@ -13,11 +13,13 @@ public class Building : MonoBehaviour {
         // public BuildingType buildingType;
     }
 
+    [Header("Building")]
     // public BuildingType buildingType;
     [ReadOnly] public int typeIndex;
 
     public Vector2Int[] localOccupiedSpaces;
     public BuildingRecipe buildingRecipe;
+    public TileType[] mustBePlacedOnTileTypes = new TileType[0];
 
     // local
     [Space]

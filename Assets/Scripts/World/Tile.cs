@@ -40,12 +40,16 @@ public class Tile : MonoBehaviour {
         // todo fix go
     }
     public bool CanPlaceBuilding(Building buildingType) {
-        return !HasBuilding
-            // tile type accepts buildings
-            && (!groundTileType.blocksBuildings || groundTileType.allowedBuildingTypes.Contains(buildingType))
-            // player is not standing here
-            && WorldManager.Instance.WorldPosToTilePos(GameManager.Instance.player.transform.position) != mapPos
-            ;
+        if (HasBuilding) return false;
+        // tile type accepts buildings
+        if (groundTileType.blocksBuildings && !groundTileType.allowedBuildingTypes.Contains(buildingType)) return false;
+        // building accepts tile
+        if ((buildingType.mustBePlacedOnTileTypes.Length > 0 && !buildingType.mustBePlacedOnTileTypes.Contains(groundTileType))) return false;
+        // player is not standing here
+        if (WorldManager.Instance.WorldPosToTilePos(GameManager.Instance.player.transform.position) == mapPos) return false;
+
+        // can place
+        return true;
     }
     public void PlaceBuilding(Building building) {
         this.building = building;

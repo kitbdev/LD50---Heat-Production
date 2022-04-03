@@ -360,8 +360,8 @@ public class BuildInterface : MonoBehaviour {
         Vector3 targetPos = cursorPos;
         // snap to world grid
         if (cursorOverTile != null) {
+            targetPos = cursorOverTile.transform.position;
             if (cursorOverTile.CanPlaceBuilding(placingType)) {
-                targetPos = cursorOverTile.transform.position;
                 placingGhostBuilding.quickOutline.OutlineColor = validGhostColor;
             } else {
                 // invalid

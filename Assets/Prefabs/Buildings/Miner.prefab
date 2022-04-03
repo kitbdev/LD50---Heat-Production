@@ -223,6 +223,10 @@ MonoBehaviour:
   localOccupiedSpaces: []
   buildingRecipe:
     requiredItems: []
+  mustBePlacedOnTileTypes:
+  - {fileID: 11400000, guid: f6a7b6426afdd0e4483e5e1b520d9f2a, type: 2}
+  - {fileID: 11400000, guid: 932ffde523b178f489fe50a36b1f7496, type: 2}
+  - {fileID: 11400000, guid: 8b05af3e18e2f6f43945992877177ecc, type: 2}
   labelName: {fileID: 6723724741889532874}
   quickOutline: {fileID: 4342184347737250790}
   isPlaced: 0
