@@ -143,6 +143,15 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShiftInvStackModifier"",
+                    ""type"": ""Button"",
+                    ""id"": ""c62dbe00-f961-4b7f-a9bc-29bbc16e4621"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -583,6 +592,17 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""RecenterCam"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3bcf24aa-1ac0-4cc4-b7a2-7a8339d58cc7"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ShiftInvStackModifier"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1183,6 +1203,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
         m_Player_Zoom = m_Player.FindAction("Zoom", throwIfNotFound: true);
         m_Player_RecenterCam = m_Player.FindAction("RecenterCam", throwIfNotFound: true);
+        m_Player_ShiftInvStackModifier = m_Player.FindAction("ShiftInvStackModifier", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1267,6 +1288,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Pause;
     private readonly InputAction m_Player_Zoom;
     private readonly InputAction m_Player_RecenterCam;
+    private readonly InputAction m_Player_ShiftInvStackModifier;
     public struct PlayerActions
     {
         private @Controls m_Wrapper;
@@ -1284,6 +1306,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
         public InputAction @Zoom => m_Wrapper.m_Player_Zoom;
         public InputAction @RecenterCam => m_Wrapper.m_Player_RecenterCam;
+        public InputAction @ShiftInvStackModifier => m_Wrapper.m_Player_ShiftInvStackModifier;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1332,6 +1355,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @RecenterCam.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRecenterCam;
                 @RecenterCam.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRecenterCam;
                 @RecenterCam.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRecenterCam;
+                @ShiftInvStackModifier.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShiftInvStackModifier;
+                @ShiftInvStackModifier.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShiftInvStackModifier;
+                @ShiftInvStackModifier.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShiftInvStackModifier;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -1375,6 +1401,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @RecenterCam.started += instance.OnRecenterCam;
                 @RecenterCam.performed += instance.OnRecenterCam;
                 @RecenterCam.canceled += instance.OnRecenterCam;
+                @ShiftInvStackModifier.started += instance.OnShiftInvStackModifier;
+                @ShiftInvStackModifier.performed += instance.OnShiftInvStackModifier;
+                @ShiftInvStackModifier.canceled += instance.OnShiftInvStackModifier;
             }
         }
     }
@@ -1544,6 +1573,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         void OnPause(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
         void OnRecenterCam(InputAction.CallbackContext context);
+        void OnShiftInvStackModifier(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

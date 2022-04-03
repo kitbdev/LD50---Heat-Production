@@ -10,6 +10,7 @@ public class BuildInterface : MonoBehaviour {
     [SerializeField] Transform buildingButtonHolder;
     [SerializeField] GameObject buildingToggleBtnPrefab;
     [SerializeField] UnityEngine.UI.ToggleGroup buildingToggleGroup;
+    [SerializeField] BuildingScreen buildingScreen;
 
     [SerializeField] Color selectedColor;
     [SerializeField] Color validGhostColor;
@@ -88,6 +89,16 @@ public class BuildInterface : MonoBehaviour {
                         DeselectBuilding();
                     }
                 }
+            } else {
+                // show building screen, if available
+                if (cursorOverTile != null && cursorOverTile.HasBuilding) {
+                    if (cursorOverTile.building.HasBuildingScreen) {
+                        // show it
+                        buildingScreen.SetShown(true);
+                        buildingScreen.building = cursorOverTile.building;
+                        buildingScreen.UpdateUI();
+                    }
+                }
             }
         };
         controls.Player.PlaceBuilding.canceled += c => {
@@ -137,6 +148,11 @@ public class BuildInterface : MonoBehaviour {
     private void AbortInteraction() {
         if (isPlacing) CancelPlacing();
         // todo cancel eyedropper toggle?
+        //? select cancel
+    }
+
+    public void HideBuildingScreen() {
+        buildingScreen.SetShown(false);
     }
 
     private void Update() {
@@ -235,8 +251,8 @@ public class BuildInterface : MonoBehaviour {
     void StartBuilding() {
         isBuilding = true;
         // show ui
+        HideBuildingScreen();
         buildScreen?.Show();
-
     }
     void FinishBuilding() {
         isBuilding = false;

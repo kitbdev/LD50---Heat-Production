@@ -15,7 +15,7 @@ public class Inventory : MonoBehaviour {
         }
     }
 
-    [SerializeField] int numSlots = 1;
+    public int numSlots = 1;
     public ItemSlot[] itemSlots;
 
     // public UnityEvent OnItemAddedEvent;
@@ -83,7 +83,7 @@ public class Inventory : MonoBehaviour {
         // Debug.Log("ts " + maxSpace+" "+nonFullMatchingSlots.Count());
         return maxSpace;
     }
-    public bool HasSpaceFor(ItemStack[] itemStacks) {
+    public bool HasSpaceFor(params ItemStack[] itemStacks) {
         foreach (var itemStack in itemStacks) {
             if (!HasSpaceFor(itemStack.itemType, itemStack.count)) {
                 return false;
@@ -92,7 +92,7 @@ public class Inventory : MonoBehaviour {
         return true;
     }
 
-    public bool HasItems(ItemStack[] itemStacks) {
+    public bool HasItems(params ItemStack[] itemStacks) {
         foreach (var itemStack in itemStacks) {
             if (!HasItemAtLeast(itemStack.itemType, itemStack.count)) {
                 return false;
@@ -100,27 +100,28 @@ public class Inventory : MonoBehaviour {
         }
         return true;
     }
+    public void AddItems(params ItemStack[] itemStacks) => AddItems(itemStacks);
     public void AddItems(IEnumerable<ItemStack> itemStacks) {
         foreach (var itemStack in itemStacks) {
-            AddItemNoEvent(new Item(itemStack.itemType), itemStack.count);
+            AddItemNoEvent(itemStack.itemType, itemStack.count);
         }
         OnInventoryUpdateEvent?.Invoke();
     }
-    public void AddItem(Item item, int count = 1) {
-        AddItemNoEvent(item, count);
+    public void AddItem(ItemType itemType, int count = 1) {
+        AddItemNoEvent(itemType, count);
         OnInventoryUpdateEvent?.Invoke();
     }
-    void AddItemNoEvent(Item item, int count) {
+    void AddItemNoEvent(ItemType itemType, int count) {
         // probably a better way of doing this...
         for (int i = 0; i < count; i++) {
-            AddItemNoEvent(item);
+            AddItemNoEvent(itemType);
         }
     }
-    void AddItemNoEvent(Item item) {
-        ItemSlot itemSlot = GetFirstNotEmptyOrFullSlotOfType(item.itemType);
+    void AddItemNoEvent(ItemType itemType) {
+        ItemSlot itemSlot = GetFirstNotEmptyOrFullSlotOfType(itemType);
         if (itemSlot == null) {
             itemSlot = GetFirstEmptySlot();
-            itemSlot.itemStack.itemType = item.itemType;
+            itemSlot.itemStack.itemType = itemType;
             if (itemSlot == null) {
                 Debug.LogWarning("Cant add item, inventory full!");
                 return;
@@ -129,7 +130,7 @@ public class Inventory : MonoBehaviour {
         itemSlot.itemStack.count++;
     }
 
-    public IEnumerable<Item> TakeItems(ItemStack[] itemStacks) {
+    public IEnumerable<Item> TakeItems(params ItemStack[] itemStacks) {
         List<Item> items = new List<Item>();
         foreach (var itemStack in itemStacks) {
             items.AddRange(TakeFirstItemOfTypeNoNotify(itemStack.itemType, itemStack.count));
@@ -165,7 +166,35 @@ public class Inventory : MonoBehaviour {
         if (itemSlot.itemStack.count <= 0) {
             itemSlot.itemStack.itemType = null;
         }
+        OnInventoryUpdateEvent?.Invoke();
         return new Item(itemSlot.itemStack.itemType);
+    }
+    public void TransferItemsIfCan(Inventory to, params ItemStack[] itemStacks) {
+        // this inventory needs to have all the from items
+        if (!HasItems(itemStacks)) return;
+        if (to.HasSpaceFor(itemStacks)) {
+            TakeItems(itemStacks);
+            to.AddItems(itemStacks);
+        } else {
+            // otherwise transfer as many as we can
+            foreach (var itemStack in itemStacks) {
+                if (to.HasSpaceFor(itemStack)) {
+                    TakeItems(itemStack);
+                    to.AddItems(itemStack);
+                } else {
+                    for (int i = 0; i < itemStack.count; i++) {
+                        if (to.HasSpaceFor(itemStack.itemType)) {
+                            TakeFirstItemOfTypeNoNotify(itemStack.itemType, 1);
+                            to.AddItemNoEvent(itemStack.itemType);
+                        } else {
+                            break;
+                        }
+                    }
+                    OnInventoryUpdateEvent?.Invoke();
+                    to.OnInventoryUpdateEvent?.Invoke();
+                }
+            }
+        }
     }
     public void Sort() {
         // maximize maxed stacks
@@ -197,5 +226,6 @@ public class Inventory : MonoBehaviour {
             // higher first
             return -a.itemStack.itemType.sortOrder + b.itemStack.itemType.sortOrder;
         });
+        OnInventoryUpdateEvent?.Invoke();
     }
 }

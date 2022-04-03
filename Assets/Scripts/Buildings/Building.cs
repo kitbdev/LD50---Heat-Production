@@ -91,4 +91,19 @@ public class Building : MonoBehaviour {
         labelName.transform.parent.gameObject.SetActive(false);
     }
 
+
+    // for UI
+
+    public virtual bool HasBuildingScreen => true;
+    public virtual Inventory GetFirstInv() {
+        return null;
+    }
+    public virtual Inventory GetSecondInv() {
+        return null;
+    }
+    public virtual string GetDescription() {
+        return "";
+    }
+    public virtual bool BiDirectionalFirstInv => true;
+
 }

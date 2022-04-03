@@ -33,11 +33,16 @@ public class ProducerBuilding : Building, IHoldsItem {
     void ProduceItem() {
         // Debug.Log("Producing!");
         if (inventory.HasSpaceFor(productionItem)) {
-            inventory.AddItem(new Item(productionItem));
+            inventory.AddItem(productionItem);
             animator.SetBool("Active", true);
         } else {
             // is full
             animator.SetBool("Active", false);
         }
     }
+
+    public override Inventory GetSecondInv() {
+        return inventory;
+    }
+    public override bool BiDirectionalFirstInv => false;
 }

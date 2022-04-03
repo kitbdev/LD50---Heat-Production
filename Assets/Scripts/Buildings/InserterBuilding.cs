@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// todo inserter chain
+// public class InserterBuilding : Building, IAccecptsItem, IHoldsItem {
 public class InserterBuilding : Building {
 
     [Header("Inserter")]
@@ -76,11 +78,14 @@ public class InserterBuilding : Building {
         if (tobuilding != null) {
             if (tobuilding.ToInventory.HasSpaceFor(heldItem.item.itemType)) {
                 // Debug.Log("Placed");
-                tobuilding.ToInventory.AddItem(heldItem.item);
+                tobuilding.ToInventory.AddItem(heldItem.item.itemType);
                 Destroy(heldItem.gameObject);
                 heldItem = null;
                 animator.SetTrigger("Insert");
             }
         }
     }
+
+
+    public override bool HasBuildingScreen => false;
 }
