@@ -160,6 +160,7 @@ public class Inventory : MonoBehaviour {
             itemSlot.itemStack.count--;
             items.Add(new Item(type));
             if (itemSlot.itemStack.IsEmpty) {
+                itemSlot.itemStack.itemType = null;
                 itemSlot = GetFirstNotEmptySlotOfType(type);
             }
         }

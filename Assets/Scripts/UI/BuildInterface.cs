@@ -286,11 +286,12 @@ public class BuildInterface : MonoBehaviour {
     }
     void FinishBuilding() {
         isBuilding = false;
-        if (cursorMat != null) cursorMat.color = selectedColor;
-        buildScreen?.Hide();
+        DeselectBuilding();
         if (isPlacing) {
             CancelPlacing();
         }
+        if (cursorMat != null) cursorMat.color = selectedColor;
+        buildScreen?.Hide();
     }
 
     void DeleteBuilding() {

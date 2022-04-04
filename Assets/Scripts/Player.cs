@@ -15,6 +15,7 @@ public class Player : MonoBehaviour {
     [SerializeField] float maxStepPitch = 1.2f;
     [SerializeField] float stepDelay = 0.2f;
     float stepLastTime = 0;
+    [SerializeField] TweenBounce tweenBounce;
 
     [Header("Input")]
     Controls controls;
@@ -50,6 +51,7 @@ public class Player : MonoBehaviour {
             if (turnRate > 0) newRot = Quaternion.Lerp(transform.rotation, newRot, Time.deltaTime * turnRate);
             transform.rotation = newRot;
 
+            tweenBounce.PlayTween();
             if (!audioSource.isPlaying && Time.time > stepLastTime + stepDelay) {
                 // audioSource.loop = true;
                 audioSource.pitch = Random.Range(minStepPitch, maxStepPitch);
@@ -58,8 +60,10 @@ public class Player : MonoBehaviour {
                 // Debug.Log("playing ");
             }
         } else {
+            tweenBounce.StopTween();
+
             audioSource.loop = false;
-            audioSource.Stop();
+            // audioSource.Stop();
         }
     }
 }

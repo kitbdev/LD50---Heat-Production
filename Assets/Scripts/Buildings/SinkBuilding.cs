@@ -6,8 +6,14 @@ using UnityEngine.Events;
 public class SinkBuilding : Building, IAccecptsItem {
 
     [Header("Sink")]
-    public ItemType[] eatableItemTypes;
-    public int eatRate;
+    [SerializeField] ItemType[] eatableItemTypes;
+    [SerializeField] int eatRate;
+    [SerializeField] bool isHeater = true;
+    [SerializeField] float heatRate = 1f;
+    [SerializeField] bool needsItems = true;
+
+
+    [SerializeField] GameObject activeGo;
 
     Timer processTimer;
     [SerializeField] Inventory inputInventory;
@@ -15,6 +21,9 @@ public class SinkBuilding : Building, IAccecptsItem {
     public UnityEvent onEatItemEvent;
 
     public Inventory ToInventory => inputInventory;
+
+    [SerializeField, ReadOnly] bool isActive = false;
+
 
     protected override void Awake() {
         base.Awake();
@@ -38,7 +47,7 @@ public class SinkBuilding : Building, IAccecptsItem {
         if (!processTimer.IsRunning) {
             if (inputInventory.HasAnyItemsOfType(eatableItemTypes)) {
                 EatItem();
-                processTimer.ResumeTimer();
+                SetActive(true);
             }
         }
     }
@@ -48,12 +57,31 @@ public class SinkBuilding : Building, IAccecptsItem {
             // only one slot, so its fine
             inputInventory.TakeFirstItem();
             onEatItemEvent?.Invoke();
+            // if (isHeater) {
+            //     HeatManager.Instance.AddHeat(heatRate);
+            // }
         } else {
             // not enough items
-            processTimer.StopTimer();
+            SetActive(false);
         }
         if (!inputInventory.HasAnyItemsOfType(eatableItemTypes)) {
             // not enough items next time
+            SetActive(false);
+        }
+    }
+    private void Update() {
+        if (isActive) {
+            if (isHeater) {
+                HeatManager.Instance.AddHeat(heatRate * Time.deltaTime);
+            }
+        }
+    }
+    void SetActive(bool active) {
+        isActive = active;
+        if (activeGo != null) activeGo.SetActive(isActive);
+        if (isActive) {
+            processTimer.ResumeTimer();
+        } else {
             processTimer.StopTimer();
         }
     }
@@ -64,7 +92,7 @@ public class SinkBuilding : Building, IAccecptsItem {
     }
     public override bool CanTakeFromFirst => true;
     public override bool CanPutInFirst => true;
-    
+
     UnityEvent<float> sliderEvent = new UnityEvent<float>();
     public void UpdateProgressBar(float v) => sliderEvent?.Invoke(v);
     public override UnityEvent<float> sliderUpdateAction => sliderEvent;
