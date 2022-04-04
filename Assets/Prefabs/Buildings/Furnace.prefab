@@ -41,7 +41,7 @@ PrefabInstance:
     - target: {fileID: 4840450745662327553, guid: 1ee6a79d9f64a634da59d3867ca00d19,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5217258412144464315, guid: 1ee6a79d9f64a634da59d3867ca00d19,
         type: 3}
@@ -51,7 +51,7 @@ PrefabInstance:
     - target: {fileID: 5384433749805967168, guid: 1ee6a79d9f64a634da59d3867ca00d19,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5384433749805967168, guid: 1ee6a79d9f64a634da59d3867ca00d19,
         type: 3}
@@ -173,30 +173,6 @@ MonoBehaviour:
   OnInventoryUpdateEvent:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1467116607372582263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6723724740472561653}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ffb014db8bbb32a4ab2279c3e958a8fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  typeIndex: 0
-  localOccupiedSpaces: []
-  buildingRecipe:
-    requiredItems: []
-  labelName: {fileID: 6723724741889532874}
-  quickOutline: {fileID: 4342184347737250790}
-  isPlaced: 0
-  tile: {fileID: 0}
-  selectedRecipe: {fileID: 0}
-  productionRate: 0
-  inputInventory: {fileID: 0}
-  outputInventory: {fileID: 0}
 --- !u!114 &7474853957671659703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,6 +195,33 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onTimerComplete:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &961638048307701663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6723724740472561653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8fddd14e72ef0143af8890c9052f832, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  typeIndex: 0
+  localOccupiedSpaces: []
+  buildingRecipe:
+    requiredItems: []
+  mustBePlacedOnTileTypes: []
+  labelName: {fileID: 6723724741889532874}
+  quickOutline: {fileID: 4342184347737250790}
+  previewOrSelectOnlyGo: {fileID: 0}
+  isPlaced: 0
+  tile: {fileID: 0}
+  eatRate: 1
+  inputInventory: {fileID: 415990552402498666}
+  onEatItemEvent:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &6723724741889532874 stripped
