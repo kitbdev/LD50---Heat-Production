@@ -41,6 +41,10 @@ public class Tile : MonoBehaviour {
         WorldManager.Instance.UpdateTileType(mapPos, tileType);
     }
     public bool CanPlaceBuilding(Building buildingType) {
+        if (buildingType == null) {
+            Debug.LogWarning("buiding type is null");
+            return false;
+        }
         if (HasBuilding) return false;
         // tile type accepts buildings
         if (groundTileType.blocksBuildings && !groundTileType.allowedBuildingTypes.Contains(buildingType)) return false;

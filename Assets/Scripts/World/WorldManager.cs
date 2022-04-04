@@ -119,7 +119,12 @@ public class WorldManager : Singleton<WorldManager> {
             return;
         }
         Tile ntile = MakeTile(tilePos, tileType);
-        tiles[GetIndx(tilePos)] = ntile;
+        int v = GetIndx(tilePos);
+        if (v < 0 || v >= tiles.Length) {
+            Debug.LogWarning("Invalid pos! " + tilePos);
+        } else {
+            tiles[v] = ntile;
+        }
         if (b != null) {
             ntile.PlaceBuilding(b);
             b.tile = ntile;
@@ -148,13 +153,13 @@ public class WorldManager : Singleton<WorldManager> {
             // invalid position
             return null;
         }
-        tilePos -= bounds.min;
         int indx = GetIndx(tilePos);
         // Debug.Log($"i{indx} {tilePos} {tiles.Length} {bounds}");
         return tiles[indx];
     }
 
     private int GetIndx(Vector2Int tilePos) {
+        tilePos -= bounds.min;
         return tilePos.x + (bounds.width) * tilePos.y;
     }
 

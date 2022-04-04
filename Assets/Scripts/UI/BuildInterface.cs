@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
+[DefaultExecutionOrder(1)]// after tilemanager?
 public class BuildInterface : MonoBehaviour {
 
     [Header("UI")]
@@ -398,6 +399,10 @@ public class BuildInterface : MonoBehaviour {
         // Debug.Log("Finish placing");
         Vector3 targetPos = cursorPos;
         // snap to world grid
+        if (placingType == null) {
+            // Debug.LogWarning("Cancellng placing with a null placing type!");
+            placingType = BuildingManager.Instance.GetBuildingTypeForBuilding(placingGhostBuilding);
+        }
         Tile tile = WorldManager.Instance.GetTileAt(targetPos);
         if (tile != null && tile.CanPlaceBuilding(placingType)) {
             targetPos = tile.transform.position;
@@ -458,6 +463,10 @@ public class BuildInterface : MonoBehaviour {
     void UpdatePlacing() {
         Vector3 targetPos = cursorPos;
         // snap to world grid
+        if (placingType == null) {
+            // Debug.LogWarning("Cancellng placing with a null placing type!");
+            placingType = BuildingManager.Instance.GetBuildingTypeForBuilding(placingGhostBuilding);
+        }
         if (cursorOverTile != null) {
             targetPos = cursorOverTile.transform.position;
             if (cursorOverTile.CanPlaceBuilding(placingType)) {

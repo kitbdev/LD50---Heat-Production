@@ -76,6 +76,7 @@ public class HeatManager : Singleton<HeatManager> {
     [SerializeField] Slider temperatureSlider;
     [SerializeField] bool keepInfoShown = false;
     [SerializeField] TMPro.TMP_Text tempInfoText;
+    [SerializeField] MenuScreen tempMenu;
     bool temperatureHovered = false;
 
     [Space]
@@ -86,6 +87,10 @@ public class HeatManager : Singleton<HeatManager> {
     [SerializeField] TileType iceType;
     [SerializeField, ReadOnly] float changeTileTimer = 0f;
 
+    [Space]
+    [SerializeField] Material hpmat;
+
+    [Space]
     public UnityEvent<float> onHeatUpdate;
 
     protected override void Awake() {
@@ -166,6 +171,11 @@ public class HeatManager : Singleton<HeatManager> {
         heatThisFrame += amount * heatProductionScale;
     }
 
+    public void SetHealthEffect(float healthPercent) {
+        Color color = hpmat.color;
+        color.a = 1f - healthPercent;
+        hpmat.color = color;
+    }
 
 
     void UpdateHeatEffects() {
@@ -179,7 +189,10 @@ public class HeatManager : Singleton<HeatManager> {
 
         // hurt player 
         if (currentHeatLevel < freezeThreshold) {
+            playerHealth.regenActive = false;
             playerHealth.TakeDamage(heatDamageRate * Time.deltaTime);
+        } else {
+            playerHealth.regenActive = true;
         }
 
         ParticleSystem.EmissionModule emission = snowParticles.emission;
@@ -211,13 +224,22 @@ public class HeatManager : Singleton<HeatManager> {
     }
     public void ShowTemperInfo() {
         temperatureHovered = true;
+        tempMenu.Show();
         UpdateTemperatureInfo();
+    }
+    public void TemperInfoClicked() {
+        keepInfoShown = !keepInfoShown;
+        if (keepInfoShown) {
+            UpdateTemperatureInfo();
+        } else {
+            HideTemperInfo();
+        }
     }
 
     private void UpdateTemperatureInfo() {
         tempInfoText.text =
         $@"Current Heat: 
-{currentHeatLevel:F2}K
+{currentHeatLevel:F2}K ({heatPercentage:F2}%)
 Loss Rate: 
 {currentHeatLossRate:F2}K/min
 Production Rate: 
@@ -227,8 +249,9 @@ Production Rate:
 
     public void HideTemperInfo() {
         if (!keepInfoShown) {
+            tempMenu.Hide();
             temperatureHovered = false;
-            tempInfoText.text = "";
+            // tempInfoText.text = "";
         }
     }
 }
