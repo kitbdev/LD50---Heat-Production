@@ -39,6 +39,7 @@ public class Building : MonoBehaviour {
     public QuickOutline quickOutline;
     protected Animator animator;
     [SerializeField] GameObject previewOrSelectOnlyGo;
+    protected AudioSource audioSource;
 
     // [Header("Runtime")]
     [SerializeField] bool isPlaced = false;
@@ -69,6 +70,7 @@ public class Building : MonoBehaviour {
     }
     protected virtual void Awake() {
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         // NewMethod();
         if (previewOrSelectOnlyGo != null) previewOrSelectOnlyGo.SetActive(true);
     }

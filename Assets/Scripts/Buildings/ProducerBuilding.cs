@@ -24,7 +24,9 @@ public class ProducerBuilding : Building, IHoldsItem {
         processTimer.onTimerComplete.AddListener(ProduceItem);
         processTimer.onTimerUpdate.AddListener(UpdateProgressBar);
         inventory.OnInventoryUpdateEvent.AddListener(InvUpdate);
+        audioSource.loop = true;
         processTimer.StartTimer();
+        audioSource.Play();
         animator.SetBool("Active", true);
     }
     public override void OnRemoved() {
@@ -40,6 +42,10 @@ public class ProducerBuilding : Building, IHoldsItem {
         if (!processTimer.IsRunning) {
             if (inventory.HasSpaceFor(productionItem)) {
                 // ProduceItem();
+                if (!processTimer.IsRunning) {
+                    audioSource.Play();
+                    // audioSource.UnPause();
+                }
                 processTimer.ResumeTimer();
             }
         }
@@ -53,6 +59,7 @@ public class ProducerBuilding : Building, IHoldsItem {
             // is full
             animator.SetBool("Active", false);
             processTimer.PauseTimer();
+            audioSource.Pause();
         }
     }
 

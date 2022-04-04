@@ -42,3 +42,5 @@ MonoBehaviour:
   tilePrefab: {fileID: 8612002778542423528, guid: 4af1620e88175a747be6145feae775df,
     type: 3}
   produces: {fileID: 0}
+  changeToTypeOnClick: {fileID: 0}
+  produceGetClip: {fileID: 8300000, guid: dbeb026c0cb2f0744b09ec8d883c43a8, type: 3}

@@ -34,7 +34,6 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 1
-  displayName: 
   overrideMaterial: {fileID: 0}
   blocksBuildings: 1
   blocksPlayer: 0
@@ -43,3 +42,5 @@ MonoBehaviour:
   tilePrefab: {fileID: 1758037796376737950, guid: 9fa554da1769ce147a5d283ef770be76,
     type: 3}
   produces: {fileID: 11400000, guid: 97d7f5ab7e72a794586144dfee792daf, type: 2}
+  changeToTypeOnClick: {fileID: 0}
+  produceGetClip: {fileID: 8300000, guid: dbeb026c0cb2f0744b09ec8d883c43a8, type: 3}

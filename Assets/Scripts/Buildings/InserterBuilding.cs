@@ -55,6 +55,7 @@ public class InserterBuilding : Building, IHoldsItem {
         processTimer.onTimerComplete.AddListener(TimerEvent);
         heldInventory.OnInventoryUpdateEvent.AddListener(HeldInvUpdate);
         processTimer.StartTimer();
+        audioSource.loop = false;
         UpdateFromInv();
     }
     public override void OnRemoved() {
@@ -96,6 +97,7 @@ public class InserterBuilding : Building, IHoldsItem {
                 // Debug.Log("clearing helditem " + heldItem);
             }
             animator.SetBool("Grabbed", false);
+            audioSource.Stop();
 
             processTimer.duration = grabDur;
             processTimer.ResumeTimer();
@@ -128,6 +130,7 @@ public class InserterBuilding : Building, IHoldsItem {
             // Debug.Log("Grabbed");
             processTimer.duration = placeDur;
             processTimer.StartTimer();
+            audioSource.Play();
             // processTimer.ResumeTimer();
             animator.SetBool("Grabbed", true);
             isInProcess = false;
@@ -145,12 +148,17 @@ public class InserterBuilding : Building, IHoldsItem {
                 if (heldInventory.HasItemAtLeast(heldItem.item.itemType, 1)) {
                     heldInventory.TakeFirstItem();
                 }
-                Destroy(heldItem.gameObject);
+                if (heldItem == null) {
+                    Debug.LogWarning("held item changed!");
+                } else {
+                    Destroy(heldItem.gameObject);
+                }
                 heldItem = null;
                 // Debug.Log("clearing helditem " + heldItem);
                 processTimer.duration = grabDur;
                 processTimer.StartTimer();
                 animator.SetBool("Grabbed", false);
+                audioSource.Stop();
                 // animator.SetTrigger("Insert");
                 isInProcess = false;
                 return;

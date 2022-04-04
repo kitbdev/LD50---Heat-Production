@@ -17,12 +17,16 @@ public class TileType : UnityEngine.Tilemaps.Tile {
 
     public ItemType produces;
     public TileType changeToTypeOnClick;
+    public AudioClip produceGetClip;
 
     public virtual void OnClick(Tile tile) {
         // nothing
 
         // make item
         if (produces != null) {
+            if (produceGetClip != null) {
+                AudioManager.Instance.PlaySfx(produceGetClip, tile.transform.position);
+            }
             Inventory playerInventory = GameManager.Instance.playerInventory;
             if (playerInventory.HasSpaceFor(produces)) {
                 playerInventory.AddItem(produces);

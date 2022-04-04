@@ -27,6 +27,8 @@ public class BuildInterface : MonoBehaviour {
     [SerializeField] TMPro.TMP_Text buildingInfoText;
     [SerializeField] int ghostSmoothingPos = 20;
     [SerializeField] int ghostSmoothingRot = 40;
+    [SerializeField] AudioClip placeClip;
+    [SerializeField] AudioClip destroyClip;
     // [Space]
     [SerializeField, ReadOnly] bool isPlacing;
     [SerializeField, ReadOnly] GameObject placingGhost;
@@ -54,9 +56,11 @@ public class BuildInterface : MonoBehaviour {
     [SerializeField] Camera cam;
     Controls controls;
     Plane gamePlane = new Plane(Vector3.up, Vector3.zero);
+    private AudioSource audioSource;
 
     private void Awake() {
         cam ??= Camera.main;
+        audioSource = GetComponent<AudioSource>();
         SetUpUI();
         if (cursorText) {
             cursorText.transform.parent.gameObject.SetActive(false);
@@ -231,9 +235,9 @@ public class BuildInterface : MonoBehaviour {
         }
     }
 
-    void UpdateBuildingInfo(Building buildingType){
+    void UpdateBuildingInfo(Building buildingType) {
         // show building requirements
-        buildingInfoText.text = 
+        buildingInfoText.text =
             $"{buildingType.buildingRecipe}";
     }
 
@@ -293,8 +297,10 @@ public class BuildInterface : MonoBehaviour {
             return;
         }
         if (selectedBuilding != null) {
+            audioSource.PlayOneShot(destroyClip);
             selectedBuilding.tile.DeleteBuilding();
         } else if (hoverBuilding != null) {
+            audioSource.PlayOneShot(destroyClip);
             hoverBuilding.tile.DeleteBuilding();
         }
     }
@@ -363,6 +369,7 @@ public class BuildInterface : MonoBehaviour {
             tile.PlaceBuilding(placingGhostBuilding);
             placingGhostBuilding.quickOutline.enabled = false;
             placingGhost = null;
+            audioSource.PlayOneShot(placeClip);
         } else {
             // invalid
             // ? or just ignore click?
