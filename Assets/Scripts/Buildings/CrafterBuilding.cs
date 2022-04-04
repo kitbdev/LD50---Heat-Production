@@ -27,6 +27,7 @@ public class CrafterBuilding : Building, IHoldsItem, IAccecptsItem {
     public override void OnPlaced() {
         base.OnPlaced();
         processTimer.onTimerComplete.AddListener(CraftItem);
+        processTimer.autoRestart = false;
         inputInventory.OnInventoryUpdateEvent.AddListener(InvUpdate);
         outputInventory.OnInventoryUpdateEvent.AddListener(InvUpdate);
         processTimer.onTimerUpdate.AddListener(UpdateProgressBar);
@@ -44,7 +45,7 @@ public class CrafterBuilding : Building, IHoldsItem, IAccecptsItem {
         if (!processTimer.IsRunning) {
             if (inputInventory.HasItems(selectedRecipe.requiredItems)) {
                 if (outputInventory.HasSpaceFor(selectedRecipe.producedItems)) {
-                    CraftItem();
+                    // CraftItem();
                     processTimer.ResumeTimer();
                 }
             }

@@ -43,6 +43,7 @@ public class BuildingScreen : MonoBehaviour {
     public void UpdateUI() {
         Building buildingType = BuildingManager.Instance.GetBuildingTypeForBuilding(building);
         nameText.text = buildingType.name;
+        // Debug.Log("opening " + buildingType.name);
         descText.text = building.GetDescription();
         Inventory inventory = building.GetFirstInv();
         if (inventory != null) {

@@ -282,7 +282,9 @@ public class BuildInterface : MonoBehaviour {
         isBuilding = true;
         // show ui
         HideBuildingScreen();
-        buildScreen?.Show();
+        if (buildingScreen != null) {
+            buildScreen.Show();
+        }
     }
     void FinishBuilding() {
         isBuilding = false;

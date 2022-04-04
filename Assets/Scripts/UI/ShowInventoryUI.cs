@@ -100,8 +100,18 @@ public class ShowInventoryUI : MonoBehaviour, IPointerMoveHandler {
         if (!itemSlot.itemStack.HasItem) return;
 
         // if shift is down, transfer whole stack - inverted
-        int transferAmount = !shiftMoreButton.action.IsPressed() ? itemSlot.itemStack.count : 1;
-        inventory.TransferItemsIfCan(secondInventory, itemSlot.itemStack);
+        bool shift = shiftMoreButton.action.IsPressed();
+        int transferAmount;// = !shift ? itemSlot.itemStack.count : 1;
+        if (eventData.button == PointerEventData.InputButton.Right) {
+            transferAmount = itemSlot.itemStack.count == 1 ? 1 : itemSlot.itemStack.count / 2;
+        } else if (shift) {
+            transferAmount = 1;
+        } else {
+            transferAmount = itemSlot.itemStack.count;
+        }
+        ItemStack tStack = itemSlot.itemStack.Copy();
+        tStack.count = transferAmount;
+        inventory.TransferItemsIfCan(secondInventory, tStack);
         inventory.Sort();
         secondInventory.Sort();
         eventData.Use();

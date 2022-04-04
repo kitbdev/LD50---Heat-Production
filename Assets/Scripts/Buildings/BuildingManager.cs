@@ -10,7 +10,7 @@ public class BuildingManager : Singleton<BuildingManager> {
 
     public Building GetBuildingTypeForBuilding(Building building) {
         // note be careful to seperate building types from buildings, building types are the prefabs
-        return buildingTypes.FirstOrDefault(b => building.typeIndex == b.typeIndex);
+        return buildingTypes.FirstOrDefault(b => building.sortOrder == b.sortOrder);
     }
     public GameObject GetPrefabForBuildingType(Building buildingType) {
         return buildingType.gameObject;
@@ -25,6 +25,7 @@ public class BuildingManager : Singleton<BuildingManager> {
             GameObject buildingPrefab = buildingPrefabs[i];
             Building building = buildingPrefab.GetComponent<Building>();
             UnityEditor.Undo.RecordObject(building, "Set type index");
+            //! this still doesnt save
             building.typeIndex = i;
             UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(building);
         }

@@ -44,10 +44,11 @@ public class SinkBuilding : Building, IAccecptsItem {
         processTimer.StopTimer();
         base.OnRemoved();
     }
+    bool processing = false;
     void InvUpdate() {
         if (!processTimer.IsRunning) {
             if (!needsItems || inputInventory.HasAnyItemsOfType(eatableItemTypes)) {
-                EatItem();
+                // EatItem();
                 SetActive(true);
             }
         }
@@ -55,13 +56,17 @@ public class SinkBuilding : Building, IAccecptsItem {
     void EatItem() {
         // Debug.Log("eating!");
         if (inputInventory.HasAnyItemsOfType(eatableItemTypes)) {
-            // only one slot, so its fine
-            Item item = inputInventory.TakeFirstItem();
-            onEatItemEvent?.Invoke();
-            heatRate = item.itemType.heatRate;
-            // if (isHeater) {
-            //     HeatManager.Instance.AddHeat(heatRate);
-            // }
+            if (!processing) {
+                processing = true;
+                // only one slot, so its fine
+                Item item = inputInventory.TakeFirstItem();
+                onEatItemEvent?.Invoke();
+                heatRate = item.itemType.heatRate;
+                // if (isHeater) {
+                //     HeatManager.Instance.AddHeat(heatRate);
+                // }
+                processing = false;
+            }
         } else if (needsItems) {
             // not enough items
             SetActive(false);
