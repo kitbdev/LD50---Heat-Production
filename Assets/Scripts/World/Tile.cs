@@ -21,8 +21,8 @@ public class Tile : MonoBehaviour {
     public Vector2Int mapPos { get => _mapPos; protected set => _mapPos = value; }
     public Building building { get => _building; protected set => _building = value; }
 
-    private void Awake() {
 
+    private void Awake() {
     }
     [System.Serializable]
     public struct TileInitArgs {
@@ -34,6 +34,7 @@ public class Tile : MonoBehaviour {
         mapPos = args.mapPos;
         GetComponent<Collider>().enabled = args.hasTileCollision;
         _groundTileType = args.tileType;
+        // UpdateNeighbors();
     }
     public void ChangeGroundTile(TileType tileType) {
         // we'll get remade
@@ -55,6 +56,7 @@ public class Tile : MonoBehaviour {
         this.building = building;
         building.tile = this;
         building.OnPlaced();
+        UpdateNeighbors();
     }
     public void RemoveBuilding() {
         // Debug.Log("Rem " + name + " " + HasBuilding);
@@ -62,6 +64,7 @@ public class Tile : MonoBehaviour {
         building.OnRemoved();
         building.tile = null;
         building = null;
+        UpdateNeighbors();
     }
     public void DeleteBuilding() {
         if (!HasBuilding) return;
@@ -72,5 +75,21 @@ public class Tile : MonoBehaviour {
             DestroyImmediate(building.gameObject);
         }
     }
-
+    void UpdateNeighbors() {
+        Vector2Int[] neighbors = new Vector2Int[]{
+            Vector2Int.up,
+            Vector2Int.right,
+            Vector2Int.down,
+            Vector2Int.left,
+        };
+        foreach (var nei in neighbors) {
+            Vector2Int npos = mapPos + nei;
+            Tile tile = WorldManager.Instance.GetTileAt(npos);
+            if (tile != null) {
+                if (tile.HasBuilding) {
+                    tile.building.OnNeighborUpdated();
+                }
+            }
+        }
+    }
 }

@@ -55,7 +55,7 @@ public class Inventory : MonoBehaviour {
         && !sl.itemStack.IsEmpty && !sl.itemStack.IsFull);
 
 
-    public bool HasAnyItems() => itemSlots.Any(sl => sl.itemStack.count > 0);
+    public bool HasAnyItems() => itemSlots.Any(sl => sl.itemStack.HasItem && sl.itemStack.count > 0);
     public bool HasAnyItemsOfType(params ItemType[] matchingItemTypes) =>
         itemSlots.Any(sl => matchingItemTypes.Contains(sl.itemStack.itemType) && sl.itemStack.count > 0);
 
@@ -166,14 +166,16 @@ public class Inventory : MonoBehaviour {
         ItemSlot itemSlot = GetFirstNotEmptySlot();
         if (itemSlot == null) {
             // empty
+            Debug.LogWarning("Cant take no not empty slot!");
             return null;
         }
         itemSlot.itemStack.count--;
+        ItemType itemType = itemSlot.itemStack.itemType;
         if (itemSlot.itemStack.count <= 0) {
             itemSlot.itemStack.itemType = null;
         }
         OnInventoryUpdateEvent?.Invoke();
-        return new Item(itemSlot.itemStack.itemType);
+        return new Item(itemType);
     }
     public void TransferItemsIfCan(Inventory to, params ItemStack[] itemStacks) {
         // this inventory needs to have all the from items

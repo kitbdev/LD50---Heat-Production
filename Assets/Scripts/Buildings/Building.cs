@@ -88,6 +88,9 @@ public class Building : MonoBehaviour {
         IsPlaced = false;
         if (previewOrSelectOnlyGo != null) previewOrSelectOnlyGo.SetActive(true);
     }
+    public virtual void OnNeighborUpdated() {
+        
+    }
 
     public void OnHover() {
         labelName.transform.parent.gameObject.SetActive(true);

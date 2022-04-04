@@ -13,6 +13,10 @@ public class ItemManager : Singleton<ItemManager> {
     public GameObject droppedItemPrefab;
 
     public DroppedItem DropItem(Item item) {
+        if (item == null || item.itemType == null) {
+            Debug.LogWarning("Cant drop null item!");
+            return null;
+        }
         GameObject droppedGo = Instantiate(droppedItemPrefab, transform);
         droppedGo.name = item.itemType.name + " dropped";
         DroppedItem droppedItem = droppedGo.GetComponent<DroppedItem>();

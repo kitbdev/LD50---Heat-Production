@@ -102,7 +102,6 @@ public class WorldManager : Singleton<WorldManager> {
             ntile.PlaceBuilding(b);
             b.tile = ntile;
         }
-
     }
 
     public Vector2Int WorldPosToTilePos(Vector3 worldPos) {

@@ -34,13 +34,14 @@ public class Timer : MonoBehaviour {
             timer += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
             onTimerUpdate?.Invoke(Progress);
             if (timer >= duration) {
-                // trigger
-                onTimerComplete?.Invoke();
                 if (autoRestart) {
-                    StartTimer();
+                    // StartTimer();  
+                    timer = 0;
                 } else {
                     StopTimer();
                 }
+                // trigger
+                onTimerComplete?.Invoke();
             }
         }
     }
