@@ -50,13 +50,18 @@ public class PauseManager : Singleton<PauseManager> {
         SetPaused(false);
     }
     public void SetPaused(bool pause = true) {
+        SetPaused(pause, true);
+    }
+    public void SetPaused(bool pause, bool callEvents) {
         isPaused = pause;
         float targetScale = isPaused ? 0 : 1;
         Time.timeScale = targetScale;
-        if (isPaused) {
-            pauseEvent.Invoke();
-        } else {
-            unpauseEvent.Invoke();
+        if (callEvents) {
+            if (isPaused) {
+                pauseEvent.Invoke();
+            } else {
+                unpauseEvent.Invoke();
+            }
         }
     }
     private void OnApplicationFocus(bool hasFocus) {

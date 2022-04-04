@@ -33,7 +33,9 @@ public class HeatManager : Singleton<HeatManager> {
     [SerializeField, ReadOnly] float heatProductionThisFrameNorm = 0;
 
     [Space]
+#if UNITY_EDITOR
     [SerializeField][Range(0f, 20f)] float timescaler = 1f;
+#endif
     [SerializeField, ReadOnly] float time = 0;
 
     [Header("Rates")]
@@ -90,11 +92,13 @@ public class HeatManager : Singleton<HeatManager> {
         ResetHeat();
         HideTemperInfo();
     }
+#if UNITY_EDITOR
     private void OnValidate() {
         if (Application.isPlaying) {
             Time.timeScale = timescaler;
         }
     }
+#endif
 
     private void Update() {
         UpdateHeatLevels();
@@ -176,7 +180,7 @@ public class HeatManager : Singleton<HeatManager> {
         // }
 
         ParticleSystem.EmissionModule emission = snowParticles.emission;
-        emission.rateOverTime = Mathf.Lerp(minSnowSpawnRate, maxSnowSpawnRate, heatPercentage);
+        emission.rateOverTime = Mathf.Lerp(minSnowSpawnRate, maxSnowSpawnRate, 1f - heatPercentage);
 
         // make more snow tiles
         if (currentHeatLevel < startingHeatLevel && Time.time >= changeTileTimer) {

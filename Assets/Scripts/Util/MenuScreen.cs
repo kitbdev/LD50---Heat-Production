@@ -18,6 +18,8 @@ public class MenuScreen : MonoBehaviour {
     [SerializeField] bool recenterOnAwake = true;
     [SerializeField] bool showOnTop = true;
     [SerializeField] ShowAction showOnStart = ShowAction.NONE;
+    [SerializeField] float fadeDuration = 0f;
+    [SerializeField] bool fadeUnscaled = true;
 
     [ReadOnly] public bool isShown = false;
 
@@ -52,10 +54,10 @@ public class MenuScreen : MonoBehaviour {
         if (showOnStart == ShowAction.SHOW) {
             // changed so will invoke event
             isShown = false;
-            Show();
+            SetShown(true, true, false);
         } else if (showOnStart == ShowAction.HIDE) {
             isShown = true;
-            Hide();
+            SetShown(false, true, false);
         }
     }
     private void OnEnable() {
@@ -77,12 +79,12 @@ public class MenuScreen : MonoBehaviour {
     [ContextMenu("Show")]
     void ShowEditor() {
         canvasGroup = GetComponent<CanvasGroup>();
-        SetShownDontNotify(true);
+        SetShown(true, false, false);
     }
     [ContextMenu("Hide")]
     void HideEditor() {
         canvasGroup = GetComponent<CanvasGroup>();
-        SetShownDontNotify(false);
+        SetShown(false, false, false);
     }
     public void Show() {
         SetShown(true);
@@ -91,19 +93,31 @@ public class MenuScreen : MonoBehaviour {
         SetShown(false);
     }
     public void SetShown(bool shown) {
-        SetShownDontNotify(shown);
-        if (shown) {
-            if (menuScreenGroup != null) {
-                menuScreenGroup.NotifyMenuScreenOn(this);
-            }
-        }
+        SetShown(shown, true, true);
     }
-    public void SetShownDontNotify(bool shown) {
-        bool wasShown = shown;
+
+    Coroutine coroutine;
+    public void SetShown(bool shown, bool invokeEvents, bool allowFade = true) {
+        bool wasShown = isShown;
         isShown = shown;
+        if (allowFade && fadeDuration > 0f && wasShown != shown) {
+            if (coroutine != null) {
+                StopCoroutine(coroutine);
+            }
+            coroutine = StartCoroutine(Fade(shown, wasShown, invokeEvents));
+            return;
+        }
+        SetDirect(shown);
+        AfterSet(wasShown, invokeEvents);
+    }
+
+    private void SetDirect(bool shown) {
         canvasGroup.alpha = shown ? 1f : 0f;
         canvasGroup.blocksRaycasts = shown;
         canvasGroup.interactable = shown;
+    }
+
+    private void AfterSet(bool wasShown, bool invokeEvents) {
         if (isShown) {
             selectOnShow?.Select();
             if (showOnTop) {
@@ -119,5 +133,34 @@ public class MenuScreen : MonoBehaviour {
                 OnHiddenEvent?.Invoke();
             }
         }
+        if (isShown && invokeEvents) {
+            if (menuScreenGroup != null) {
+                menuScreenGroup.NotifyMenuScreenOn(this);
+            }
+        }
+    }
+
+    IEnumerator Fade(bool shown, bool wasShown, bool invokeEvents) {
+        float timer = 0;
+        float progress = 0;
+        canvasGroup.alpha = wasShown ? 1f : 0f;
+        if (isShown) {
+            // ? before
+            canvasGroup.blocksRaycasts = true;
+            canvasGroup.interactable = true;
+        }
+        while (progress < 1) {
+            yield return null;
+            timer += fadeUnscaled ? Time.unscaledDeltaTime : Time.deltaTime;
+            progress = Mathf.InverseLerp(0, fadeDuration, timer);
+            if (shown) {
+                canvasGroup.alpha = progress;
+            } else {
+                canvasGroup.alpha = 1f - progress;
+            }
+        }
+        SetDirect(shown);
+        AfterSet(wasShown, invokeEvents);
+        coroutine = null;
     }
 }

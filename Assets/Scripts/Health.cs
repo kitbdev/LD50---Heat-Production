@@ -25,11 +25,11 @@ public class Health : MonoBehaviour {
     }
     public void FullHeal() {
         health = maxHealth;
-        onHealthUpdateEvent?.Invoke(health);
+        onHealthUpdateEvent?.Invoke(0);
     }
 
     private void Update() {
-        if (health < maxHealth && regenActive ) {
+        if (health < maxHealth && regenActive) {
             // regen
             Heal(regenRate * Time.deltaTime);
         }
@@ -37,12 +37,13 @@ public class Health : MonoBehaviour {
     public void Heal(float amount) {
         health += amount;
         health = Mathf.Min(health, maxHealth);
-        onHealthUpdateEvent?.Invoke(health);
+        onHealthUpdateEvent?.Invoke(Mathf.InverseLerp(maxHealth, 0f, health));
     }
     public void TakeDamage(float amount) {
         if (IsDead) return;
         health -= amount;
-        onHealthUpdateEvent?.Invoke(health);
+        // onHealthUpdateEvent?.Invoke(health);
+        onHealthUpdateEvent?.Invoke(Mathf.InverseLerp(maxHealth, 0f, health));
         if (IsDead) {
             onDieEvent?.Invoke();
         }

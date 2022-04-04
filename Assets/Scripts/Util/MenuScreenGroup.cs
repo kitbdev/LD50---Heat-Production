@@ -45,12 +45,12 @@ public class MenuScreenGroup : MonoBehaviour {
             HideAllScreensExcept(menuScreen);
         }
         if (!menuScreen.isShown) {
-            menuScreen.SetShownDontNotify(true);
+            menuScreen.SetShown(true, false);
         }
     }
     public void HideMenuScreen(MenuScreen menuScreen) {
         if (menuScreen.isShown) {
-            menuScreen.SetShownDontNotify(false);
+            menuScreen.SetShown(false, false);
         }
     }
     public void HideAllScreens() {

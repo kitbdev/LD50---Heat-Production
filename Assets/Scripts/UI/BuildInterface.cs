@@ -90,6 +90,7 @@ public class BuildInterface : MonoBehaviour {
         };
         controls.Player.PlaceBuilding.Enable();
         controls.Player.PlaceBuilding.performed += c => {
+            if (Time.deltaTime == 0) return;
             if (isBuilding) {
                 if (isPlacing) {
                     FinishPlacing();
@@ -130,6 +131,7 @@ public class BuildInterface : MonoBehaviour {
             }
         };
         controls.Player.PlaceBuilding.canceled += c => {
+            // if (Time.deltaTime == 0) return;
             dragHeld = false;
             // drag release finish placing
             if (isBuilding && isPlacing) {
@@ -137,9 +139,13 @@ public class BuildInterface : MonoBehaviour {
             }
         };
         controls.Player.RemoveBuilding.Enable();
-        controls.Player.RemoveBuilding.performed += c => { DeleteBuilding(); };
+        controls.Player.RemoveBuilding.performed += c => {
+            if (Time.deltaTime == 0) return;
+            DeleteBuilding();
+        };
         controls.Player.RotateBuilding.Enable();
         controls.Player.RotateBuilding.performed += c => {
+            if (Time.deltaTime == 0) return;
             curRotation += c.ReadValue<float>() > 0 ? 1 : -1;
             if (curRotation > 3) curRotation = 0;
             if (curRotation < 0) curRotation = 3;
@@ -184,7 +190,11 @@ public class BuildInterface : MonoBehaviour {
     }
 
     private void Update() {
-
+        if (Time.deltaTime == 0) {
+            cursorT?.gameObject.SetActive(false);
+            cursorText?.transform.parent.gameObject.SetActive(false);
+            return;
+        }
         // get cursor pos
         // if using mouse
         // todo contoller
@@ -226,7 +236,6 @@ public class BuildInterface : MonoBehaviour {
         }
 
         if (isBuilding) {
-
             if (isPlacing) {
                 UpdatePlacing();
             } else {

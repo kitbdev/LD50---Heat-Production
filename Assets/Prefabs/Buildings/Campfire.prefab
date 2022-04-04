@@ -391,7 +391,7 @@ MonoBehaviour:
   eatRate: 1
   isHeater: 1
   heatRate: 1
-  needsItems: 0
+  needsItems: 1
   activeGo: {fileID: 9197611040279628713}
   inputInventory: {fileID: 415990552402498666}
   onEatItemEvent:
