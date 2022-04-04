@@ -44,3 +44,4 @@ MonoBehaviour:
   produces: {fileID: 11400000, guid: 09847e0d1c72e774c8bf83f3251e4352, type: 2}
   changeToTypeOnClick: {fileID: 0}
   produceGetClip: {fileID: 8300000, guid: dbeb026c0cb2f0744b09ec8d883c43a8, type: 3}
+  produceClipVol: 0.2

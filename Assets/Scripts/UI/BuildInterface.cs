@@ -359,7 +359,10 @@ public class BuildInterface : MonoBehaviour {
     void StartPlacing() {
         if (requireResources) {
             bool canBuild = GameManager.Instance.playerInventory.HasItems(placingType.buildingRecipe.requiredItems);
-            if (!canBuild) return;
+            if (!canBuild) {
+                buildingToggleGroup.SetAllTogglesOff();
+                return;
+            }
             GameManager.Instance.playerInventory.TakeItems(placingType.buildingRecipe.requiredItems);
         }
         DeselectBuilding();

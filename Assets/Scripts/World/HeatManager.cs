@@ -179,9 +179,9 @@ public class HeatManager : Singleton<HeatManager> {
         emission.rateOverTime = Mathf.Lerp(minSnowSpawnRate, maxSnowSpawnRate, heatPercentage);
 
         // make more snow tiles
-        if (Time.time >= changeTileTimer + changeTileRate) {
+        if (currentHeatLevel < startingHeatLevel && Time.time >= changeTileTimer) {
             // try only once in rate
-            changeTileTimer = Time.time;
+            changeTileTimer = Time.time + changeTileRate * Random.Range(0.6f, 1.4f);
             RectInt bounds = WorldManager.Instance.bounds;
             Vector2Int randomPos = new Vector2Int(
                 Random.Range(bounds.xMin, bounds.xMax),
@@ -189,8 +189,10 @@ public class HeatManager : Singleton<HeatManager> {
             );
             Tile rtile = WorldManager.Instance.GetTileAt(randomPos);
             if (rtile != null) {
+                // Debug.Log("freezing tile " + rtile.groundTileType + " " + rtile.name);
                 if (rtile.groundTileType == grassType) {
                     rtile.ChangeGroundTile(snowType);
+                    // Debug.Log("freezing tile to snow");
                     // } else if (rtile.groundTileType == waterType) {
                     //     rtile.ChangeGroundTile(iceType);
                 }

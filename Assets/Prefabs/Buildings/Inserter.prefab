@@ -680,7 +680,11 @@ MonoBehaviour:
   sortOrder: 5
   localOccupiedSpaces: []
   buildingRecipe:
-    requiredItems: []
+    requiredItems:
+    - itemType: {fileID: 11400000, guid: 8ea2846494c9ee742b1ff80d9400c4c9, type: 2}
+      count: 3
+    - itemType: {fileID: 11400000, guid: bc661d5598ec25b4eb6e8aa0bd9e3a7c, type: 2}
+      count: 2
   mustBePlacedOnTileTypes: []
   icon: {fileID: 21300000, guid: aca2dbf1006440a408cbdb47ea0da992, type: 3}
   labelName: {fileID: 6723724741889532874}

@@ -16,25 +16,24 @@ public class TileType : UnityEngine.Tilemaps.Tile {
     public GameObject tilePrefab;// additional to existing prefab
 
     public ItemType produces;
+    // public float productionTime;
     public TileType changeToTypeOnClick;
     public AudioClip produceGetClip;
+    public float produceClipVol = 1f;
 
     public virtual void OnClick(Tile tile) {
         // nothing
 
-        // make item
         if (produces != null) {
-            if (produceGetClip != null) {
-                AudioManager.Instance.PlaySfx(produceGetClip, tile.transform.position);
-            }
-            Inventory playerInventory = GameManager.Instance.playerInventory;
-            if (playerInventory.HasSpaceFor(produces)) {
-                playerInventory.AddItem(produces);
-            }
-        }
-        if (changeToTypeOnClick != null) {
-            // todo anim?
-            tile.ChangeGroundTile(changeToTypeOnClick);
+            ProductionClick.Instance.ProduceItem(this, tile);
         }
     }
+    // public override bool Equals(object other) {
+    //     return name.Equals(other);
+    // }
+    // public override int GetHashCode() {
+    //     return name.GetHashCode();
+    // }
+    // public static bool operator ==(TileType a, TileType other) => a?.name == other?.name;
+    // public static bool operator !=(TileType a, TileType other) => a.name != other.name;
 }

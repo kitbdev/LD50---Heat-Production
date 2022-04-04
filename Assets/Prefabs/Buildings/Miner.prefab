@@ -356,7 +356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startOnStart: 0
-  duration: 1
+  duration: 2
   autoRestart: 1
   useUnscaledTime: 0
   isRunning: 0
@@ -383,7 +383,11 @@ MonoBehaviour:
   sortOrder: 2
   localOccupiedSpaces: []
   buildingRecipe:
-    requiredItems: []
+    requiredItems:
+    - itemType: {fileID: 11400000, guid: 8ea2846494c9ee742b1ff80d9400c4c9, type: 2}
+      count: 4
+    - itemType: {fileID: 11400000, guid: 7cc7f2f583e077f44b8debd55ce2e8f8, type: 2}
+      count: 2
   mustBePlacedOnTileTypes:
   - {fileID: 11400000, guid: f6a7b6426afdd0e4483e5e1b520d9f2a, type: 2}
   - {fileID: 11400000, guid: 932ffde523b178f489fe50a36b1f7496, type: 2}
@@ -395,7 +399,6 @@ MonoBehaviour:
   previewOrSelectOnlyGo: {fileID: 0}
   isPlaced: 0
   tile: {fileID: 0}
-  productionRate: 1
 --- !u!114 &6723724741889532874 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5384433749805967175, guid: 1ee6a79d9f64a634da59d3867ca00d19,

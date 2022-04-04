@@ -479,7 +479,13 @@ MonoBehaviour:
   sortOrder: 6
   localOccupiedSpaces: []
   buildingRecipe:
-    requiredItems: []
+    requiredItems:
+    - itemType: {fileID: 11400000, guid: 8ea2846494c9ee742b1ff80d9400c4c9, type: 2}
+      count: 8
+    - itemType: {fileID: 11400000, guid: bc661d5598ec25b4eb6e8aa0bd9e3a7c, type: 2}
+      count: 4
+    - itemType: {fileID: 11400000, guid: 7cc7f2f583e077f44b8debd55ce2e8f8, type: 2}
+      count: 2
   mustBePlacedOnTileTypes: []
   icon: {fileID: 21300000, guid: 2b22060265e290840abeac7aafc2fae4, type: 3}
   labelName: {fileID: 6723724741889532874}

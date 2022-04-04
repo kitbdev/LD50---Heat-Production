@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class CrafterBuilding : Building, IHoldsItem, IAccecptsItem {
 
     [Header("Crafter")]
+    [SerializeField] ItemRecipe[] availableRecipes = new ItemRecipe[0];
     public ItemRecipe selectedRecipe;
+    [SerializeField] bool autoChooseRecipe = true;
     // public ItemType productionItem;
     public int productionRate;
 
@@ -49,6 +52,13 @@ public class CrafterBuilding : Building, IHoldsItem, IAccecptsItem {
     }
     void CraftItem() {
         // Debug.Log("crafting!");
+        if (selectedRecipe == null) {
+            if (autoChooseRecipe) {
+                // choose based on input item type and available recipes
+                Item peekitem = inputInventory.PeekFirstItem();
+                selectedRecipe = availableRecipes.FirstOrDefault(r => r.requiredItems.Any(i => i.itemType == peekitem.itemType));
+            }
+        }
         if (selectedRecipe == null) {
             return;
         }

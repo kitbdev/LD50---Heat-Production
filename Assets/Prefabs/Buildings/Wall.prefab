@@ -59,6 +59,22 @@ PrefabInstance:
       propertyPath: quickOutline
       value: 
       objectReference: {fileID: 4342184347737250790}
+    - target: {fileID: 5384433750535101310, guid: 1ee6a79d9f64a634da59d3867ca00d19,
+        type: 3}
+      propertyPath: buildingRecipe.requiredItems.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384433750535101310, guid: 1ee6a79d9f64a634da59d3867ca00d19,
+        type: 3}
+      propertyPath: buildingRecipe.requiredItems.Array.data[0].count
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5384433750535101310, guid: 1ee6a79d9f64a634da59d3867ca00d19,
+        type: 3}
+      propertyPath: buildingRecipe.requiredItems.Array.data[0].itemType
+      value: 
+      objectReference: {fileID: 11400000, guid: bc661d5598ec25b4eb6e8aa0bd9e3a7c,
+        type: 2}
     - target: {fileID: 5384433750535101311, guid: 1ee6a79d9f64a634da59d3867ca00d19,
         type: 3}
       propertyPath: m_RootOrder

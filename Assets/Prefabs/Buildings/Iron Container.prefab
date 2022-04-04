@@ -134,7 +134,9 @@ MonoBehaviour:
   sortOrder: 7
   localOccupiedSpaces: []
   buildingRecipe:
-    requiredItems: []
+    requiredItems:
+    - itemType: {fileID: 11400000, guid: 8ea2846494c9ee742b1ff80d9400c4c9, type: 2}
+      count: 10
   mustBePlacedOnTileTypes: []
   icon: {fileID: 21300000, guid: 895e9fb98807cc54fb60815c02236512, type: 3}
   labelName: {fileID: 2804139199855796642}

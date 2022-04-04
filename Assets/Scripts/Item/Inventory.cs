@@ -135,6 +135,11 @@ public class Inventory : MonoBehaviour {
         itemSlot.itemStack.count++;
     }
 
+    public Item PeekFirstItem() {
+        ItemSlot itemSlot = GetFirstNotEmptySlot();
+        if (itemSlot == null) return null;
+        return new Item(itemSlot.itemStack.itemType);
+    }
     public IEnumerable<Item> TakeItems(params ItemStack[] itemStacks) {
         List<Item> items = new List<Item>();
         foreach (var itemStack in itemStacks) {
