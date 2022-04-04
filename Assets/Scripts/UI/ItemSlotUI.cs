@@ -27,6 +27,12 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         this.itemStack = itemStack;
         countText.text = "" + itemStack.count;
         nameText.text = "" + itemStack.itemType?.name ?? "None";
+        if (itemStack.itemType != null) {
+            itemImage.sprite = itemStack.itemType.icon;
+            itemImage.gameObject.SetActive(true);
+        } else {
+            itemImage.gameObject.SetActive(false);
+        }
     }
     public void SetSelect(bool selected) {
         selectedGo.SetActive(selected);

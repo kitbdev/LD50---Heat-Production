@@ -186,6 +186,7 @@ MonoBehaviour:
   buildingRecipe:
     requiredItems: []
   mustBePlacedOnTileTypes: []
+  icon: {fileID: 0}
   labelName: {fileID: 6723724741889532874}
   quickOutline: {fileID: 4342184347737250790}
   previewOrSelectOnlyGo: {fileID: 0}

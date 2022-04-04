@@ -11,6 +11,8 @@ public class ItemType : ScriptableObject {
     // higher first
     [Tooltip("Higher first")]
     public int sortOrder;
+    public Sprite icon;
+    public float heatRate = 1;
 
     public override string ToString() {
         return name;

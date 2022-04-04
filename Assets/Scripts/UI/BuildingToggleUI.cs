@@ -15,6 +15,7 @@ public class BuildingToggleUI : MonoBehaviour {
     [SerializeField] TMPro.TMP_Text label;
     [SerializeField] Transform icon;
     [SerializeField] Toggle toggle;
+    [SerializeField] Image image;
 
     [SerializeField, ReadOnly] BToggleInitData data;
 
@@ -28,7 +29,7 @@ public class BuildingToggleUI : MonoBehaviour {
         data = initData;
         toggle.group = initData.toggleGroup;
         label.text = initData.buildingType.name;
-        // ?
+        image.sprite = initData.buildingType.icon;
     }
     public void OnToggled(bool value) {
         if (value) {

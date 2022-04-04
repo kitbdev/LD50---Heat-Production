@@ -527,6 +527,7 @@ MonoBehaviour:
   buildingRecipe:
     requiredItems: []
   mustBePlacedOnTileTypes: []
+  icon: {fileID: 21300000, guid: aca2dbf1006440a408cbdb47ea0da992, type: 3}
   labelName: {fileID: 6723724741889532874}
   quickOutline: {fileID: 4342184347737250790}
   previewOrSelectOnlyGo: {fileID: 6082062744650173778}

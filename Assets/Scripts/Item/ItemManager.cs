@@ -19,8 +19,10 @@ public class ItemManager : Singleton<ItemManager> {
         }
         GameObject droppedGo = Instantiate(droppedItemPrefab, transform);
         droppedGo.name = item.itemType.name + " dropped";
+        droppedGo.transform.localPosition = Vector3.zero;
         DroppedItem droppedItem = droppedGo.GetComponent<DroppedItem>();
         droppedItem.item = item;
+        droppedItem.UpdateSprite();
         return droppedItem;
     }
 

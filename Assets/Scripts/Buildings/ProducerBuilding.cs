@@ -6,8 +6,8 @@ using UnityEngine.Events;
 public class ProducerBuilding : Building, IHoldsItem {
 
     [Header("Producer")]
-    public ItemType productionItem;
     public int productionRate;
+    public ItemType productionItem => tile?.groundTileType.produces;
 
     Timer processTimer;
     Inventory inventory;

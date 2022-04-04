@@ -34,6 +34,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5384433750535101310, guid: 1ee6a79d9f64a634da59d3867ca00d19,
         type: 3}
+      propertyPath: icon
+      value: 
+      objectReference: {fileID: 21300000, guid: cb87b73f380996a4c93ae53fc628b1f5,
+        type: 3}
+    - target: {fileID: 5384433750535101310, guid: 1ee6a79d9f64a634da59d3867ca00d19,
+        type: 3}
       propertyPath: sortOrder
       value: 8
       objectReference: {fileID: 0}

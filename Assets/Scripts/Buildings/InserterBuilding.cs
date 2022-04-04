@@ -107,7 +107,10 @@ public class InserterBuilding : Building, IHoldsItem {
         }
     }
     void StartMovingItem() {
-        if (heldItem != null) return;
+        if (heldItem != null) {
+            return;
+        }
+        Debug.Log("Startmoving h"+heldItem);
         // Debug.Log("try grab " + fromBuildingLPos + " " + LocalRelPosToTilePos(fromBuildingLPos));
         if (fromInv != null && fromInv.HasAnyItems()) {
             // todo optional filter
@@ -116,8 +119,8 @@ public class InserterBuilding : Building, IHoldsItem {
             // Debug.Log($"taking '{item}' from {fromInv.name}");
             heldItem = ItemManager.Instance.DropItem(item);
             heldItem.transform.parent = grabber;
-            heldItem.transform.position = Vector3.zero;
-            heldItem.transform.rotation = Quaternion.identity;
+            heldItem.transform.localPosition = Vector3.zero;
+            heldItem.transform.localRotation = Quaternion.identity;
             // Debug.Log("Grabbed");
             processTimer.duration = placeDur;
             processTimer.StartTimer();

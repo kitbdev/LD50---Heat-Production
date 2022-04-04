@@ -14,6 +14,7 @@ public class Building : MonoBehaviour {
         // public BuildingType buildingType;
     }
 
+    // type data
     [Header("Building")]
     // public BuildingType buildingType;
     [ReadOnly] public int typeIndex;
@@ -22,6 +23,7 @@ public class Building : MonoBehaviour {
     public Vector2Int[] localOccupiedSpaces;
     public BuildingRecipe buildingRecipe;
     public TileType[] mustBePlacedOnTileTypes = new TileType[0];
+    public Sprite icon;
 
     // local
     [Space]

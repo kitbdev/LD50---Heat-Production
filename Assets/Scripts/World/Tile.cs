@@ -67,10 +67,11 @@ public class Tile : MonoBehaviour {
         UpdateNeighbors();
     }
     public void DeleteBuilding() {
+        GameObject bgo = building.gameObject;
         if (!HasBuilding) return;
         RemoveBuilding();
         if (Application.isPlaying) {
-            Destroy(building.gameObject);
+            Destroy(bgo);
         } else {
             DestroyImmediate(building.gameObject);
         }
