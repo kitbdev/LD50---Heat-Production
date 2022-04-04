@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class BuildInterface : MonoBehaviour {
@@ -11,6 +12,12 @@ public class BuildInterface : MonoBehaviour {
     [SerializeField] GameObject buildingToggleBtnPrefab;
     [SerializeField] UnityEngine.UI.ToggleGroup buildingToggleGroup;
     [SerializeField] BuildingScreen buildingScreen;
+
+
+    [SerializeField] TMPro.TMP_Text buildingInfoText;
+    [SerializeField] GameObject buildingInfoPanel;
+
+
     [SerializeField] float tileClickDelay = 0.1f;
     float tileClickedLastTime = 0;
 
@@ -21,12 +28,13 @@ public class BuildInterface : MonoBehaviour {
     [Header("Placing")]
     [SerializeField] bool requireResources = true;
     [Layer][SerializeField] int previewLayer;
+    [SerializeField] int ghostSmoothingPos = 20;
+    [SerializeField] int ghostSmoothingRot = 40;
     [SerializeField] Transform cursorT;
     [SerializeField] Material cursorMat;
     [SerializeField] TMPro.TMP_Text cursorText;
-    [SerializeField] TMPro.TMP_Text buildingInfoText;
-    [SerializeField] int ghostSmoothingPos = 20;
-    [SerializeField] int ghostSmoothingRot = 40;
+
+
     [SerializeField] AudioClip placeClip;
     [SerializeField] AudioClip destroyClip;
     // [Space]
@@ -235,12 +243,6 @@ public class BuildInterface : MonoBehaviour {
         }
     }
 
-    void UpdateBuildingInfo(Building buildingType) {
-        // show building requirements
-        buildingInfoText.text =
-            $"{buildingType.buildingRecipe}";
-    }
-
     private void SetHoverBuilding(Building selbuilding) {
         if (hoverBuilding != null) {
             hoverBuilding.OnUnHover();
@@ -273,6 +275,7 @@ public class BuildInterface : MonoBehaviour {
             });
         }
         buildingToggleGroup.SetAllTogglesOff();
+        buildingInfoPanel.SetActive(false);
     }
 
     void StartBuilding() {
@@ -442,5 +445,27 @@ public class BuildInterface : MonoBehaviour {
         while (turn > 3) turn -= 4;
         while (turn < 0) turn += 4;
         return turn;
+    }
+
+
+    [SerializeField, ReadOnly] Building hoverImageBuildingType;
+
+    public void OnBuildingImageHover(Building buildingType, PointerEventData eventData) {
+        if (hoverImageBuildingType != null) {
+            // 
+            Debug.LogWarning("alreadyhovering");
+        }
+        buildingInfoPanel.SetActive(true);
+        // show building requirements
+        buildingInfoText.text =
+            $"{buildingType.buildingRecipe}";
+        hoverImageBuildingType = buildingType;
+    }
+    public void OnBuildingImageUnHover(Building buildingType, PointerEventData eventData) {
+        if (hoverImageBuildingType == buildingType) {
+            hoverImageBuildingType = null;
+            // unhover
+            buildingInfoPanel.SetActive(false);
+        }
     }
 }

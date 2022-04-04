@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class BuildingToggleUI : MonoBehaviour {
+public class BuildingToggleUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
     [System.Serializable]
     public struct BToggleInitData {
@@ -39,4 +40,14 @@ public class BuildingToggleUI : MonoBehaviour {
         }
     }
 
+    public void OnPointerEnter(PointerEventData eventData) {
+        if (data.buildInterface != null) {
+            data.buildInterface.OnBuildingImageHover(data.buildingType, eventData);
+        }
+    }
+    public void OnPointerExit(PointerEventData eventData) {
+        if (data.buildInterface != null) {
+            data.buildInterface.OnBuildingImageUnHover(data.buildingType, eventData);
+        }
+    }
 }

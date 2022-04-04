@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HeatManager : Singleton<HeatManager> {
 
@@ -21,23 +22,44 @@ public class HeatManager : Singleton<HeatManager> {
     [SerializeField] float minSnowSpawnRate = 10;
     [SerializeField] float maxSnowSpawnRate = 80;
 
+    [SerializeField] Slider temperatureSlider;
+    [SerializeField] TMPro.TMP_Text tempInfoText;
 
 
 
-    LinkedList<float> heatProductionOverTime= new LinkedList<float>();
+
+    LinkedList<float> heatProductionOverTime = new LinkedList<float>();
+
+    protected override void Awake() {
+        HideTemperInfo();
+    }
 
 
-    void UpdateHeatLevels(){
-        
+
+    void UpdateHeatLevels() {
+
 
         // fixed sample rate?
         // heatProductionOverTime.RemoveFirst();
         // heatProductionOverTime.AddLast();
     }
 
-    void UpdateHeatEffects(){
+    void UpdateHeatEffects() {
         // float heatPercentage
+        // hurt player 
+
         // snowParticles.emission.rateOverTime
+
         // make more snow tiles
+
+        // wind sfx louder?
+
+    }
+
+    public void ShowTemperInfo(){
+        tempInfoText.text = "?";
+    }
+    public void HideTemperInfo(){
+        tempInfoText.text = "";
     }
 }
