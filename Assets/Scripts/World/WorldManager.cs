@@ -5,18 +5,39 @@ using UnityEngine.Tilemaps;
 
 public class WorldManager : Singleton<WorldManager> {
 
+    [System.Serializable]
+    public struct PlaceBuildingData {
+        public Building buildingType;
+        public Vector2Int coords;
+    }
+
     public RectInt bounds;
     [SerializeField] bool hideTiles = true;
     [SerializeField] float tileSize = 2;
     [SerializeReference] GameObject tilePrefab;
     [SerializeField] Tilemap sourceMap;
-    [SerializeField] int extraTilesBorder;
-    [SerializeField] TileType extraTilesType;
+    // [SerializeField] int extraTilesBorder;
+    // [SerializeField] TileType extraTilesType;
+    [SerializeField]
+    PlaceBuildingData[] placeBuildingDataOnStarts = new PlaceBuildingData[0];
 
     [SerializeField][HideInInspector] Tile[] tiles;
 
     protected override void Awake() {
         CreateTiles();
+    }
+    private void Start() {
+        foreach (var placeBuilding in placeBuildingDataOnStarts) {
+            Tile tile = GetTileAt(placeBuilding.coords);
+            if (tile != null && placeBuilding.buildingType != null) {
+                var bgo = Instantiate(BuildingManager.Instance.GetPrefabForBuildingType(placeBuilding.buildingType), transform);
+                bgo.transform.position = tile.transform.position;
+                Building building = bgo.GetComponent<Building>();
+                tile.PlaceBuilding(building);
+            } else {
+                Debug.LogWarning($"Cant place {placeBuilding.buildingType} at {placeBuilding.coords}");
+            }
+        }
     }
 
     [ContextMenu("CenterBounds")]

@@ -303,9 +303,23 @@ public class BuildInterface : MonoBehaviour {
         if (selectedBuilding != null) {
             audioSource.PlayOneShot(destroyClip);
             selectedBuilding.tile.DeleteBuilding();
+            if (requireResources) {
+                // refund
+                var remType = BuildingManager.Instance.GetBuildingTypeForBuilding(selectedBuilding);
+                if (GameManager.Instance.playerInventory.HasSpaceFor(remType.buildingRecipe.requiredItems)) {
+                    GameManager.Instance.playerInventory.AddItems(remType.buildingRecipe.requiredItems);
+                }
+            }
         } else if (hoverBuilding != null) {
             audioSource.PlayOneShot(destroyClip);
             hoverBuilding.tile.DeleteBuilding();
+            if (requireResources) {
+                // refund
+                var remType = BuildingManager.Instance.GetBuildingTypeForBuilding(hoverBuilding);
+                if (GameManager.Instance.playerInventory.HasSpaceFor(remType.buildingRecipe.requiredItems)) {
+                    GameManager.Instance.playerInventory.AddItems(remType.buildingRecipe.requiredItems);
+                }
+            }
         }
     }
     void EyeDropperSample() {

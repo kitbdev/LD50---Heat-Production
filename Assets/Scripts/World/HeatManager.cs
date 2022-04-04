@@ -1,6 +1,8 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 [DefaultExecutionOrder(5)]// after buildings
@@ -10,6 +12,7 @@ public class HeatManager : Singleton<HeatManager> {
 
     /*
     Keep heat above a threshold
+    using kelivn scale
     
     */
 
@@ -21,11 +24,31 @@ public class HeatManager : Singleton<HeatManager> {
     // public float currentHeatProduction = 1;
 
     [Space]
-    [SerializeField] float minHeatLevel = 0;
-    [SerializeField] float maxHeatLevel = 100;
+    [SerializeField, ReadOnly] float heatPercentage;
+    [SerializeField, ReadOnly] float heatPercentageAbs;
+    [SerializeField, ReadOnly] float heatProductionAvg = 0f;
+    [Space]
+    [SerializeField, ReadOnly] float heatThisFrame = 0f;
+    [SerializeField, ReadOnly] float heatLastFrame = 0f;
+    [SerializeField, ReadOnly] float heatProductionThisFrameNorm = 0;
 
+    [Space]
+    [SerializeField][Range(0f, 20f)] float timescaler = 1f;
+    [SerializeField, ReadOnly] float time = 0;
+
+    [Header("Rates")]
+    // per minute
+    [SerializeField] float heatLossStartRate = 5;
     [SerializeField] float heatLossRateRate = 1;
-    [SerializeField] float heatLossRateExp = 1;
+    [SerializeField] float heatProductionScale = 1;
+    // [SerializeField] float heatLossRateExp = 1;
+
+    [Header("Levels")]
+    [SerializeField] float startingHeatLevel = 288;
+    [SerializeField] float absZeroHeatLevel = 0;
+    [SerializeField] float freezeThreshold = 273;
+    [SerializeField] float maxHeatLevel = 330;
+
 
 
     [Header("History")]
@@ -34,15 +57,13 @@ public class HeatManager : Singleton<HeatManager> {
     float recordTimer = 0f;
     LinkedList<float> heatLevelOverTime = new LinkedList<float>();
     LinkedList<float> heatProductionOverTime = new LinkedList<float>();
-    [SerializeField, ReadOnly] float heatThisFrame = 0f;
-
+    [SerializeField] int heatProductionAvgSampleSize = 30;
 
 
     [Header("Effects")]
 
     [SerializeField] Health playerHealth;
     public float heatDamageRate = 1;
-    public float heatDamageThreshhold = 1;
 
     [Space]
     [SerializeField] ParticleSystem snowParticles;
@@ -51,28 +72,63 @@ public class HeatManager : Singleton<HeatManager> {
 
     [Space]
     [SerializeField] Slider temperatureSlider;
+    [SerializeField] bool keepInfoShown = false;
     [SerializeField] TMPro.TMP_Text tempInfoText;
+    bool temperatureHovered = false;
 
     [Space]
+    [SerializeField] float changeTileRate = 0.1f;
     [SerializeField] TileType grassType;
     [SerializeField] TileType snowType;
     [SerializeField] TileType waterType;
     [SerializeField] TileType iceType;
+    [SerializeField, ReadOnly] float changeTileTimer = 0f;
 
+    public UnityEvent<float> onHeatUpdate;
+
+    protected override void Awake() {
+        ResetHeat();
+        HideTemperInfo();
+    }
+    private void OnValidate() {
+        if (Application.isPlaying) {
+            Time.timeScale = timescaler;
+        }
+    }
 
     private void Update() {
         UpdateHeatLevels();
+        time = Time.time / 60f;
+    }
+
+    [ContextMenu("Reset heat")]
+    void ResetHeat() {
+        currentHeatLevel = startingHeatLevel;
+        currentHeatLossRate = heatLossStartRate;
+        worldHeatLevel = startingHeatLevel;
     }
 
     void UpdateHeatLevels() {
+        currentHeatLossRate += ((heatLossRateRate / 60f) * Time.deltaTime);
 
-
-        currentHeatLossRate += (heatLossRateRate * Time.deltaTime);
-        //  * Mathf.Exp(currentHeatLossRate) * heatLossRateExp;
-        float heatLossFrame = currentHeatLossRate * Time.deltaTime;
+        float heatLossFrame = (currentHeatLossRate / 60f) * Time.deltaTime;
         worldHeatLevel -= heatLossFrame;
-        currentHeatLevel += heatThisFrame - heatLossFrame;
+        if (worldHeatLevel < absZeroHeatLevel) {
+            worldHeatLevel = absZeroHeatLevel;
+        }
+        currentHeatLevel -= heatLossFrame;
+        if (currentHeatLevel < absZeroHeatLevel) {
+            currentHeatLevel = absZeroHeatLevel;
+        }
 
+        // should stop cur heat from reaching max
+        // https://www.desmos.com/calculator/8elrztdnhd
+        float heatMaxLimit = -Mathf.Pow(2 * (maxHeatLevel - currentHeatLevel) + 1, -1f) + 1f;
+        heatProductionThisFrameNorm = heatThisFrame / 60f * heatMaxLimit;
+        currentHeatLevel += heatProductionThisFrameNorm;
+        if (currentHeatLevel > maxHeatLevel) {
+            currentHeatLevel = maxHeatLevel;
+        }
 
         if (Time.time > recordTimer + recordInterval) {
             // fixed sample rate
@@ -83,27 +139,35 @@ public class HeatManager : Singleton<HeatManager> {
                 heatProductionOverTime.RemoveFirst();
             }
             heatLevelOverTime.AddLast(currentHeatLevel);
-            heatProductionOverTime.AddLast(heatThisFrame);// smooth it out?
+            // frame min
+            heatProductionOverTime.AddLast(heatThisFrame * 1f / Time.deltaTime);
+
+            heatProductionAvg = heatProductionOverTime.Skip(heatProductionOverTime.Count - heatProductionAvgSampleSize)
+                                .Average();
         }
 
+        heatPercentage = Mathf.InverseLerp(freezeThreshold, maxHeatLevel, currentHeatLevel);
+        heatPercentageAbs = Mathf.InverseLerp(absZeroHeatLevel, maxHeatLevel, currentHeatLevel);
         // reset
+        heatLastFrame = heatThisFrame;
         heatThisFrame = 0f;
 
-        // UpdateHeatEffects();
+        UpdateHeatEffects();
     }
 
     public void AddHeat(float amount) {
-        heatThisFrame += amount;
+        // Debug.Log("adding " + amount);
+        heatThisFrame += amount * heatProductionScale;
     }
 
-
-    protected override void Awake() {
-        HideTemperInfo();
-    }
 
 
     void UpdateHeatEffects() {
-        float heatPercentage = Mathf.InverseLerp(minHeatLevel, maxHeatLevel, currentHeatLevel);
+        onHeatUpdate?.Invoke(heatPercentage);
+        // info
+        if (temperatureHovered) {
+            UpdateTemperatureInfo();
+        }
         // slider
         temperatureSlider.value = heatPercentage;
         // hurt player 
@@ -115,31 +179,47 @@ public class HeatManager : Singleton<HeatManager> {
         emission.rateOverTime = Mathf.Lerp(minSnowSpawnRate, maxSnowSpawnRate, heatPercentage);
 
         // make more snow tiles
-        RectInt bounds = WorldManager.Instance.bounds;
-        Vector2Int randomPos = new Vector2Int(
-            Random.Range(bounds.xMin, bounds.xMax),
-            Random.Range(bounds.yMin, bounds.yMax)
-        );
-        Tile rtile = WorldManager.Instance.GetTileAt(randomPos);
-        if (rtile != null) {
-            if (rtile.groundTileType == grassType) {
-                rtile.ChangeGroundTile(snowType);
-                // } else if (rtile.groundTileType == waterType) {
-                //     rtile.ChangeGroundTile(iceType);
+        if (Time.time >= changeTileTimer + changeTileRate) {
+            // try only once in rate
+            changeTileTimer = Time.time;
+            RectInt bounds = WorldManager.Instance.bounds;
+            Vector2Int randomPos = new Vector2Int(
+                Random.Range(bounds.xMin, bounds.xMax),
+                Random.Range(bounds.yMin, bounds.yMax)
+            );
+            Tile rtile = WorldManager.Instance.GetTileAt(randomPos);
+            if (rtile != null) {
+                if (rtile.groundTileType == grassType) {
+                    rtile.ChangeGroundTile(snowType);
+                    // } else if (rtile.groundTileType == waterType) {
+                    //     rtile.ChangeGroundTile(iceType);
+                }
             }
-
         }
-
-
 
         // wind sfx louder?
 
     }
-
     public void ShowTemperInfo() {
-        tempInfoText.text = "?";
+        temperatureHovered = true;
+        UpdateTemperatureInfo();
     }
+
+    private void UpdateTemperatureInfo() {
+        tempInfoText.text =
+        $@"Current Heat: 
+{currentHeatLevel:F2}K
+Loss Rate: 
+{currentHeatLossRate:F2}K/min
+Production Rate: 
+{heatProductionAvg:F2}K/min"
+                    ;
+    }
+
     public void HideTemperInfo() {
-        tempInfoText.text = "";
+        if (!keepInfoShown) {
+            temperatureHovered = false;
+            tempInfoText.text = "";
+        }
     }
 }

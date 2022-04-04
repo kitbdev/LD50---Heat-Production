@@ -10,7 +10,7 @@ public class Health : MonoBehaviour {
     public float regenRate;
     public bool regenActive = true;
 
-    float regenTimer = 0;
+    // float regenTimer = 0;
 
     public bool IsDead => health <= 0;
     public float CurHealth => health;
@@ -29,7 +29,7 @@ public class Health : MonoBehaviour {
     }
 
     private void Update() {
-        if (health < maxHealth && regenActive) {
+        if (health < maxHealth && regenActive ) {
             // regen
             Heal(regenRate * Time.deltaTime);
         }

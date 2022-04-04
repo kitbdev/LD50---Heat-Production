@@ -35,6 +35,7 @@ public class SinkBuilding : Building, IAccecptsItem {
         processTimer.onTimerUpdate.AddListener(UpdateProgressBar);
         inputInventory.OnInventoryUpdateEvent.AddListener(InvUpdate);
         processTimer.StartTimer();
+        SetActive(true);
     }
     public override void OnRemoved() {
         processTimer.onTimerComplete.RemoveListener(EatItem);
@@ -45,31 +46,33 @@ public class SinkBuilding : Building, IAccecptsItem {
     }
     void InvUpdate() {
         if (!processTimer.IsRunning) {
-            if (inputInventory.HasAnyItemsOfType(eatableItemTypes)) {
+            if (!needsItems || inputInventory.HasAnyItemsOfType(eatableItemTypes)) {
                 EatItem();
                 SetActive(true);
             }
         }
     }
     void EatItem() {
-        Debug.Log("eating!");
+        // Debug.Log("eating!");
         if (inputInventory.HasAnyItemsOfType(eatableItemTypes)) {
             // only one slot, so its fine
-            inputInventory.TakeFirstItem();
+            Item item = inputInventory.TakeFirstItem();
             onEatItemEvent?.Invoke();
+            heatRate = item.itemType.heatRate;
             // if (isHeater) {
             //     HeatManager.Instance.AddHeat(heatRate);
             // }
-        } else {
+        } else if (needsItems) {
             // not enough items
             SetActive(false);
         }
-        if (!inputInventory.HasAnyItemsOfType(eatableItemTypes)) {
+        if (needsItems && !inputInventory.HasAnyItemsOfType(eatableItemTypes)) {
             // not enough items next time
             SetActive(false);
         }
     }
     private void Update() {
+        // Debug.Log("upd" + isActive + " " + isHeater);
         if (isActive) {
             if (isHeater) {
                 HeatManager.Instance.AddHeat(heatRate * Time.deltaTime);
