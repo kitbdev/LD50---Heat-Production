@@ -19,6 +19,8 @@ public class GameManager : Singleton<GameManager> {
     [SerializeField] MenuScreen gameOverScreen;
     [SerializeField] MenuScreen hudScreen;
     [SerializeField] GameObject mainmenuCam;
+    [SerializeField] MenuScreen tempScreen;
+    [SerializeField] float tempScreenShowDur;
 
 
     private void Start() {
@@ -51,6 +53,11 @@ public class GameManager : Singleton<GameManager> {
         mainMenu.Hide();
         hudScreen.Show();
         Time.timeScale = 1f;
+        tempScreen.Show();
+        Invoke(nameof(HideTScreen), tempScreenShowDur);
+    }
+    void HideTScreen(){
+        tempScreen.Hide();
     }
     [ContextMenu("game Ove")]
     public void GameOver() {
