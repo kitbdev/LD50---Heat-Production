@@ -19,7 +19,8 @@ public class BuildingManager : Singleton<BuildingManager> {
     [ContextMenu("Find Types")]
     void FindPrefabs() {
 #if UNITY_EDITOR
-        buildingPrefabs = AssetHelper.AutoFindAllAssets<GameObject>("Assets/Prefabs/Buildings");
+        buildingPrefabs = AssetHelper.AutoFindAllAssets<GameObject>("Assets/Prefabs/Buildings")
+            .OrderBy(b => b.GetComponent<Building>().sortOrder).ToArray();
         for (int i = 0; i < buildingPrefabs.Length; i++) {
             GameObject buildingPrefab = buildingPrefabs[i];
             Building building = buildingPrefab.GetComponent<Building>();

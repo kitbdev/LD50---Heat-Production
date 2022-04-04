@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[ExtendedSO]
 [CreateAssetMenu(fileName = "ItemRecipe", menuName = "HP/ItemRecipe", order = 0)]
 public class ItemRecipe : ScriptableObject {
     // [System.Serializable]

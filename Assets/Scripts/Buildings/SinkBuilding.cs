@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class SinkBuilding : Building, IAccecptsItem {
 
     [Header("Sink")]
-    // public ItemType productionItem;
+    public ItemType[] eatableItemTypes;
     public int eatRate;
 
     Timer processTimer;
@@ -36,7 +36,7 @@ public class SinkBuilding : Building, IAccecptsItem {
     }
     void InvUpdate() {
         if (!processTimer.IsRunning) {
-            if (inputInventory.HasAnyItems()) {
+            if (inputInventory.HasAnyItemsOfType(eatableItemTypes)) {
                 EatItem();
                 processTimer.ResumeTimer();
             }
@@ -44,15 +44,15 @@ public class SinkBuilding : Building, IAccecptsItem {
     }
     void EatItem() {
         Debug.Log("eating!");
-        if (inputInventory.HasAnyItems()) {
-            // ?
+        if (inputInventory.HasAnyItemsOfType(eatableItemTypes)) {
+            // only one slot, so its fine
             inputInventory.TakeFirstItem();
             onEatItemEvent?.Invoke();
         } else {
             // not enough items
             processTimer.StopTimer();
         }
-        if (!inputInventory.HasAnyItems()) {
+        if (!inputInventory.HasAnyItemsOfType(eatableItemTypes)) {
             // not enough items next time
             processTimer.StopTimer();
         }

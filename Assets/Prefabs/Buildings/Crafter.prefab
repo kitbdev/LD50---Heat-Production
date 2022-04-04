@@ -331,6 +331,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   typeIndex: 0
+  sortOrder: 6
   localOccupiedSpaces: []
   buildingRecipe:
     requiredItems: []

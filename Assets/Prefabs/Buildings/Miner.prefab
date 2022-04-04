@@ -220,6 +220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   typeIndex: 0
+  sortOrder: 2
   localOccupiedSpaces: []
   buildingRecipe:
     requiredItems: []
@@ -229,6 +230,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8b05af3e18e2f6f43945992877177ecc, type: 2}
   labelName: {fileID: 6723724741889532874}
   quickOutline: {fileID: 4342184347737250790}
+  previewOrSelectOnlyGo: {fileID: 0}
   isPlaced: 0
   tile: {fileID: 0}
   productionItem: {fileID: 11400000, guid: 97d7f5ab7e72a794586144dfee792daf, type: 2}

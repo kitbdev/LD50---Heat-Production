@@ -173,6 +173,35 @@ MonoBehaviour:
   OnInventoryUpdateEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &961638048307701663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6723724740472561653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8fddd14e72ef0143af8890c9052f832, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  typeIndex: 0
+  sortOrder: 1
+  localOccupiedSpaces: []
+  buildingRecipe:
+    requiredItems: []
+  mustBePlacedOnTileTypes: []
+  labelName: {fileID: 6723724741889532874}
+  quickOutline: {fileID: 4342184347737250790}
+  previewOrSelectOnlyGo: {fileID: 0}
+  isPlaced: 0
+  tile: {fileID: 0}
+  eatableItemTypes: []
+  eatRate: 1
+  inputInventory: {fileID: 415990552402498666}
+  onEatItemEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &7474853957671659703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,33 +224,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onTimerComplete:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &961638048307701663
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6723724740472561653}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8fddd14e72ef0143af8890c9052f832, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  typeIndex: 0
-  localOccupiedSpaces: []
-  buildingRecipe:
-    requiredItems: []
-  mustBePlacedOnTileTypes: []
-  labelName: {fileID: 6723724741889532874}
-  quickOutline: {fileID: 4342184347737250790}
-  previewOrSelectOnlyGo: {fileID: 0}
-  isPlaced: 0
-  tile: {fileID: 0}
-  eatRate: 1
-  inputInventory: {fileID: 415990552402498666}
-  onEatItemEvent:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &6723724741889532874 stripped
@@ -256,7 +258,7 @@ PrefabInstance:
     - target: {fileID: 2278241591009704411, guid: 6669653f74fd1244dbe21d152211c73e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.253
       objectReference: {fileID: 0}
     - target: {fileID: 2278241591009704411, guid: 6669653f74fd1244dbe21d152211c73e,
         type: 3}

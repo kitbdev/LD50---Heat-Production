@@ -17,6 +17,7 @@ public class Building : MonoBehaviour {
     [Header("Building")]
     // public BuildingType buildingType;
     [ReadOnly] public int typeIndex;
+    public int sortOrder = 0;
 
     public Vector2Int[] localOccupiedSpaces;
     public BuildingRecipe buildingRecipe;
