@@ -435,7 +435,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startOnStart: 0
-  duration: 1
+  duration: 2
   autoRestart: 1
   useUnscaledTime: 0
   isRunning: 0

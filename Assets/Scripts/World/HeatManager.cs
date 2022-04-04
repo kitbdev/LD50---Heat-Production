@@ -124,6 +124,8 @@ public class HeatManager : Singleton<HeatManager> {
         if (currentHeatLevel < absZeroHeatLevel) {
             currentHeatLevel = absZeroHeatLevel;
         }
+        // stop at freeze level, to allow for possible recovery?
+        currentHeatLevel = Mathf.Max(currentHeatLevel, freezeThreshold - 10);
 
         // should stop cur heat from reaching max
         // https://www.desmos.com/calculator/8elrztdnhd
@@ -174,10 +176,11 @@ public class HeatManager : Singleton<HeatManager> {
         }
         // slider
         temperatureSlider.value = heatPercentage;
+
         // hurt player 
-        // if ( < heatDamageThreshhold) {
-        //     playerHealth.TakeDamage(heatDamageRate * Time.deltaTime);
-        // }
+        if (currentHeatLevel < freezeThreshold) {
+            playerHealth.TakeDamage(heatDamageRate * Time.deltaTime);
+        }
 
         ParticleSystem.EmissionModule emission = snowParticles.emission;
         emission.rateOverTime = Mathf.Lerp(minSnowSpawnRate, maxSnowSpawnRate, 1f - heatPercentage);

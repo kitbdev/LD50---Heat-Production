@@ -61,6 +61,9 @@ public class Player : MonoBehaviour {
             }
         } else {
             tweenBounce.StopTween();
+            Vector3 localPosition = transform.localPosition;
+            localPosition.y = 0;
+            transform.localPosition = localPosition;
 
             audioSource.loop = false;
             // audioSource.Stop();

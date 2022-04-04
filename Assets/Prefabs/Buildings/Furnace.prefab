@@ -424,7 +424,7 @@ MonoBehaviour:
   isHeater: 1
   heatRate: 1
   needsItems: 1
-  activeGo: {fileID: 0}
+  activeGo: {fileID: 9197611040279628713}
   inputInventory: {fileID: 415990552402498666}
   onEatItemEvent:
     m_PersistentCalls:
@@ -443,7 +443,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startOnStart: 0
-  duration: 1
+  duration: 15
   autoRestart: 1
   useUnscaledTime: 0
   isRunning: 0
@@ -535,6 +535,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6669653f74fd1244dbe21d152211c73e, type: 3}
+--- !u!1 &9197611040279628713 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5732183709974341564, guid: 6669653f74fd1244dbe21d152211c73e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3470221649030753301}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5317575491041079903
 PrefabInstance:
   m_ObjectHideFlags: 0

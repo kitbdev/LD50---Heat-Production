@@ -86,6 +86,7 @@ public class CrafterBuilding : Building, IHoldsItem, IAccecptsItem {
         return inputInventory;
     }
     public override Inventory GetSecondInv() {
+        // Debug.Log("smelter inv 2" + outputInventory);
         return outputInventory;
     }
     public override bool CanTakeFromFirst => true;

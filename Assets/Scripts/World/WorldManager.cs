@@ -119,6 +119,7 @@ public class WorldManager : Singleton<WorldManager> {
             return;
         }
         Tile ntile = MakeTile(tilePos, tileType);
+        tiles[GetIndx(tilePos)] = ntile;
         if (b != null) {
             ntile.PlaceBuilding(b);
             b.tile = ntile;
@@ -148,11 +149,14 @@ public class WorldManager : Singleton<WorldManager> {
             return null;
         }
         tilePos -= bounds.min;
-        int indx = tilePos.x + (bounds.width) * tilePos.y;
+        int indx = GetIndx(tilePos);
         // Debug.Log($"i{indx} {tilePos} {tiles.Length} {bounds}");
         return tiles[indx];
     }
 
+    private int GetIndx(Vector2Int tilePos) {
+        return tilePos.x + (bounds.width) * tilePos.y;
+    }
 
     private void OnDrawGizmos() {
         Vector3 offset = Vector3.up * 1;

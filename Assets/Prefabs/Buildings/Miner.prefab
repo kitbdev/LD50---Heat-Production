@@ -356,7 +356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startOnStart: 0
-  duration: 2
+  duration: 1
   autoRestart: 1
   useUnscaledTime: 0
   isRunning: 0
@@ -379,13 +379,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 611093c3e55e84e4882d1040d24a8075, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  typeIndex: 0
+  typeIndex: 2
   sortOrder: 2
   localOccupiedSpaces: []
   buildingRecipe:
     requiredItems:
     - itemType: {fileID: 11400000, guid: 8ea2846494c9ee742b1ff80d9400c4c9, type: 2}
-      count: 4
+      count: 3
     - itemType: {fileID: 11400000, guid: 7cc7f2f583e077f44b8debd55ce2e8f8, type: 2}
       count: 2
   mustBePlacedOnTileTypes:

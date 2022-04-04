@@ -53,6 +53,9 @@ public class BuildInterface : MonoBehaviour {
     int defLayer;
 
 
+    bool isPlacingRealBulding = false;
+
+
     Vector3 cursorDragCheckPos = Vector3.zero;
     bool dragHeld = false;
     float dragCursorThreshold = 0.1f;
@@ -134,7 +137,7 @@ public class BuildInterface : MonoBehaviour {
             // if (Time.deltaTime == 0) return;
             dragHeld = false;
             // drag release finish placing
-            if (isBuilding && isPlacing) {
+            if (isBuilding && isPlacing && !(keepPlacingHold || keepPlacingToggle)) {
                 FinishPlacing();
             }
         };
@@ -304,7 +307,6 @@ public class BuildInterface : MonoBehaviour {
         if (cursorMat != null) cursorMat.color = selectedColor;
         buildScreen?.Hide();
     }
-
     void DeleteBuilding() {
         if (!isBuilding) return;
         if (isPlacing) {
@@ -314,25 +316,27 @@ public class BuildInterface : MonoBehaviour {
         if (selectedBuilding != null) {
             audioSource.PlayOneShot(destroyClip);
             selectedBuilding.tile.DeleteBuilding();
-            if (requireResources) {
-                // refund
-                var remType = BuildingManager.Instance.GetBuildingTypeForBuilding(selectedBuilding);
-                if (GameManager.Instance.playerInventory.HasSpaceFor(remType.buildingRecipe.requiredItems)) {
-                    GameManager.Instance.playerInventory.AddItems(remType.buildingRecipe.requiredItems);
-                }
-            }
+            TryRefund(selectedBuilding);
         } else if (hoverBuilding != null) {
             audioSource.PlayOneShot(destroyClip);
             hoverBuilding.tile.DeleteBuilding();
-            if (requireResources) {
-                // refund
-                var remType = BuildingManager.Instance.GetBuildingTypeForBuilding(hoverBuilding);
-                if (GameManager.Instance.playerInventory.HasSpaceFor(remType.buildingRecipe.requiredItems)) {
-                    GameManager.Instance.playerInventory.AddItems(remType.buildingRecipe.requiredItems);
-                }
+            TryRefund(hoverBuilding);
+        }
+    }
+
+    private void TryRefund(Building building) {
+        if (requireResources) {
+            // refund
+            var remType = BuildingManager.Instance.GetBuildingTypeForBuilding(building);
+            // Debug.Log("Refunding for " + building + " " + remType.name + " " + remType.buildingRecipe.requiredItems.Length);
+            if (GameManager.Instance.playerInventory.HasSpaceFor(remType.buildingRecipe.requiredItems)) {
+                GameManager.Instance.playerInventory.AddItems(remType.buildingRecipe.requiredItems);
+            } else {
+                Debug.LogWarning("Refund inventory full! items lost");
             }
         }
     }
+
     void EyeDropperSample() {
         if (!isBuilding) return;
         if (cursorOverTile != null && cursorOverTile.HasBuilding) {
@@ -365,9 +369,11 @@ public class BuildInterface : MonoBehaviour {
         // Debug.Log("Removing " + placingGhostBuilding.tile, placingGhostBuilding.tile);
         placingGhostBuilding.tile.RemoveBuilding();
         placingGhostBuilding.quickOutline.enabled = true;
+        isPlacingRealBulding = true;
         // dont need resources here
     }
     void StartPlacing() {
+        // Debug.Log("Start placing");
         if (requireResources) {
             bool canBuild = GameManager.Instance.playerInventory.HasItems(placingType.buildingRecipe.requiredItems);
             if (!canBuild) {
@@ -376,6 +382,7 @@ public class BuildInterface : MonoBehaviour {
             }
             GameManager.Instance.playerInventory.TakeItems(placingType.buildingRecipe.requiredItems);
         }
+        isPlacingRealBulding = false;
         DeselectBuilding();
         isPlacing = true;
         placingGhost = Instantiate(BuildingManager.Instance.GetPrefabForBuildingType(placingType), transform);
@@ -403,6 +410,7 @@ public class BuildInterface : MonoBehaviour {
             placingGhost = null;
             audioSource.PlayOneShot(placeClip);
         } else {
+            // Debug.Log("Cancelling placing1 ");
             // invalid
             // ? or just ignore click?
             CancelPlacing();
@@ -410,6 +418,7 @@ public class BuildInterface : MonoBehaviour {
         }
         isPlacing = false;
         if (keepPlacingHold || keepPlacingToggle) {
+            // Debug.Log("keep placing");
             StartPlacing();
         } else {
             // placingType = null;
@@ -421,17 +430,22 @@ public class BuildInterface : MonoBehaviour {
     void CancelPlacing() {
         bool wasntplacing = !isPlacing;
         if (wasntplacing) return;
+        // Debug.Log("Cancelling placing2 ");
         isPlacing = false;
         buildingToggleGroup.SetAllTogglesOff();// ! this would call self if no isplacing check before
+        if (isPlacingRealBulding) {
+            audioSource.PlayOneShot(destroyClip);
+        }
         if (requireResources) {
-            // refund
             if (placingType == null) {
                 Debug.LogWarning("Cancellng placing with a null placing type!");
                 placingType = BuildingManager.Instance.GetBuildingTypeForBuilding(placingGhostBuilding);
             }
-            if (GameManager.Instance.playerInventory.HasSpaceFor(placingType.buildingRecipe.requiredItems)) {
-                GameManager.Instance.playerInventory.AddItems(placingType.buildingRecipe.requiredItems);
-            }
+            TryRefund(placingGhostBuilding);
+            // refund
+            // if (GameManager.Instance.playerInventory.HasSpaceFor(placingType.buildingRecipe.requiredItems)) {
+            //     GameManager.Instance.playerInventory.AddItems(placingType.buildingRecipe.requiredItems);
+            // }
         }
         // todo add what we can and drop the rest?
         // ItemManager.Instance.DropItem()

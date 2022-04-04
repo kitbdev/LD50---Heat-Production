@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class BuildingScreen : MonoBehaviour {
 
-    private Building _building;
+    [SerializeField, ReadOnly] Building _building;
     [SerializeField] TMPro.TMP_Text nameText;
     [SerializeField] TMPro.TMP_Text descText;
     [SerializeField] ShowInventoryUI showInv;
@@ -40,20 +40,24 @@ public class BuildingScreen : MonoBehaviour {
         }
     }
 
+    [SerializeField, ReadOnly]Building btype;
     public void UpdateUI() {
         Building buildingType = BuildingManager.Instance.GetBuildingTypeForBuilding(building);
+        btype = buildingType;
         nameText.text = buildingType.name;
         // Debug.Log("opening " + buildingType.name);
         descText.text = building.GetDescription();
         Inventory inventory = building.GetFirstInv();
         if (inventory != null) {
             showInv.SetInv(inventory);
+            showInv.gameObject.SetActive(true);
         } else {
             showInv.gameObject.SetActive(false);
         }
         Inventory inventory1 = building.GetSecondInv();
         if (inventory1 != null) {
             secondShowInv.SetInv(inventory1);
+            secondShowInv.gameObject.SetActive(true);
         } else {
             secondShowInv.gameObject.SetActive(false);
         }
