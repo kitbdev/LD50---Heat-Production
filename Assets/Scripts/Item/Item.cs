@@ -23,7 +23,7 @@ public struct ItemStack {
     public int RemainingSpace => itemType == null ? 0 : itemType.itemMaxStack - count;
 
     public override string ToString() {
-        return IsEmpty ? "Empty Stack" : (count + " " + itemType.ToString() + "s stack");
+        return IsEmpty ? "Empty Stack" : ($"{count} {itemType.ToString()}{(count == 1 ? "" : "s")}");
     }
 
     public ItemStack Copy() {

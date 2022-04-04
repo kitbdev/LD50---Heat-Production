@@ -31,6 +31,7 @@ public class BuildingScreen : MonoBehaviour {
         menuScreen = GetComponent<MenuScreen>();
     }
 
+    public bool IsShown() => menuScreen.isShown;
     public void SetShown(bool show) {
         menuScreen.SetShown(show);
         if (defInvGo != null) {

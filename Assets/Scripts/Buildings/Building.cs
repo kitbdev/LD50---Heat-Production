@@ -12,6 +12,14 @@ public class Building : MonoBehaviour {
         public ItemStack[] requiredItems;
         // required tier?
         // public BuildingType buildingType;
+        public override string ToString() {
+            string s = "";
+            foreach (var item in requiredItems) {
+                s += item.ToString();
+                s += "\n";
+            }
+            return s;
+        }
     }
 
     // type data
@@ -91,7 +99,7 @@ public class Building : MonoBehaviour {
         if (previewOrSelectOnlyGo != null) previewOrSelectOnlyGo.SetActive(true);
     }
     public virtual void OnNeighborUpdated() {
-        
+
     }
 
     public void OnHover() {

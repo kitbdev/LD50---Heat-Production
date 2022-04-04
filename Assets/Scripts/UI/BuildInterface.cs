@@ -24,6 +24,7 @@ public class BuildInterface : MonoBehaviour {
     [SerializeField] Transform cursorT;
     [SerializeField] Material cursorMat;
     [SerializeField] TMPro.TMP_Text cursorText;
+    [SerializeField] TMPro.TMP_Text buildingInfoText;
     [SerializeField] int ghostSmoothingPos = 20;
     [SerializeField] int ghostSmoothingRot = 40;
     // [Space]
@@ -68,7 +69,11 @@ public class BuildInterface : MonoBehaviour {
             if (isBuilding) {
                 FinishBuilding();
             } else {
-                StartBuilding();
+                if (buildingScreen.IsShown()) {
+                    HideBuildingScreen();
+                } else {
+                    StartBuilding();
+                }
             }
         };
         controls.Player.PlaceBuilding.Enable();
@@ -226,6 +231,12 @@ public class BuildInterface : MonoBehaviour {
         }
     }
 
+    void UpdateBuildingInfo(Building buildingType){
+        // show building requirements
+        buildingInfoText.text = 
+            $"{buildingType.buildingRecipe}";
+    }
+
     private void SetHoverBuilding(Building selbuilding) {
         if (hoverBuilding != null) {
             hoverBuilding.OnUnHover();
@@ -283,6 +294,8 @@ public class BuildInterface : MonoBehaviour {
         }
         if (selectedBuilding != null) {
             selectedBuilding.tile.DeleteBuilding();
+        } else if (hoverBuilding != null) {
+            hoverBuilding.tile.DeleteBuilding();
         }
     }
     void EyeDropperSample() {

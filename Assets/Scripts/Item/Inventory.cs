@@ -70,6 +70,9 @@ public class Inventory : MonoBehaviour {
         return numItems >= count;
     }
 
+    public int GetNumItems() {
+        return itemSlots.Sum(sl => sl.itemStack.count);
+    }
     public int GetNumItems(ItemType itemType) {
         return GetItemStacksOfTypes(itemType).Sum(sl => sl.itemStack.count);
     }

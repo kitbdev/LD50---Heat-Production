@@ -19,6 +19,7 @@ public class InserterBuilding : Building, IHoldsItem {
     [SerializeField, ReadOnly] Inventory fromInv = null;
 
     public Inventory FromInventory => heldInventory;
+    bool isInProcess = false;
 
 
     private IHoldsItem GetHoldsItem(Vector2Int localPos) {
@@ -92,6 +93,7 @@ public class InserterBuilding : Building, IHoldsItem {
             if (heldItem != null) {
                 Destroy(heldItem.gameObject);
                 heldItem = null;
+                // Debug.Log("clearing helditem " + heldItem);
             }
             animator.SetBool("Grabbed", false);
 
@@ -110,10 +112,11 @@ public class InserterBuilding : Building, IHoldsItem {
         if (heldItem != null) {
             return;
         }
-        Debug.Log("Startmoving h"+heldItem);
+        // Debug.Log("Startmoving h" + heldItem);
         // Debug.Log("try grab " + fromBuildingLPos + " " + LocalRelPosToTilePos(fromBuildingLPos));
-        if (fromInv != null && fromInv.HasAnyItems()) {
+        if (fromInv != null && fromInv.HasAnyItems() && !isInProcess) {
             // todo optional filter
+            isInProcess = true;
             // Debug.Log($"taking '{fromInv}' from {fromInv.name}");
             Item item = fromInv.TakeFirstItem();
             // Debug.Log($"taking '{item}' from {fromInv.name}");
@@ -121,19 +124,22 @@ public class InserterBuilding : Building, IHoldsItem {
             heldItem.transform.parent = grabber;
             heldItem.transform.localPosition = Vector3.zero;
             heldItem.transform.localRotation = Quaternion.identity;
+            // Debug.Log("setting helditem " + heldItem);
             // Debug.Log("Grabbed");
             processTimer.duration = placeDur;
             processTimer.StartTimer();
             // processTimer.ResumeTimer();
             animator.SetBool("Grabbed", true);
+            isInProcess = false;
         }
         // FinishMovingItem();
     }
     void FinishMovingItem() {
         if (heldItem == null) return;
         IAccecptsItem tobuilding = GetToBuilding();
-        if (tobuilding != null) {
+        if (tobuilding != null && !isInProcess) {
             if (tobuilding.ToInventory.HasSpaceFor(heldItem.item.itemType)) {
+                isInProcess = true;
                 // Debug.Log("Placed");
                 tobuilding.ToInventory.AddItem(heldItem.item.itemType);
                 if (heldInventory.HasItemAtLeast(heldItem.item.itemType, 1)) {
@@ -141,15 +147,21 @@ public class InserterBuilding : Building, IHoldsItem {
                 }
                 Destroy(heldItem.gameObject);
                 heldItem = null;
+                // Debug.Log("clearing helditem " + heldItem);
                 processTimer.duration = grabDur;
                 processTimer.StartTimer();
                 animator.SetBool("Grabbed", false);
                 // animator.SetTrigger("Insert");
+                isInProcess = false;
                 return;
             }
         }
         // no building to put in, hold in inventory
-        heldInventory.AddItem(heldItem.item.itemType);
+        if (!heldInventory.HasAnyItems() && !isInProcess) {
+            isInProcess = true;
+            heldInventory.AddItem(heldItem.item.itemType);
+            isInProcess = false;
+        }
     }
 
 

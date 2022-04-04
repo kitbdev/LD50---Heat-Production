@@ -10,7 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ffe28e51884214644a4b05bcad46c8d7, type: 3}
-  m_Name: ItemRecipe
+  m_Name: Iron Ingot
   m_EditorClassIdentifier: 
-  requiredItems: []
-  producedItems: []
+  requiredItems:
+  - itemType: {fileID: 11400000, guid: 97d7f5ab7e72a794586144dfee792daf, type: 2}
+    count: 3
+  producedItems:
+  - itemType: {fileID: 11400000, guid: 8ea2846494c9ee742b1ff80d9400c4c9, type: 2}
+    count: 2
